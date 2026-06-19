@@ -5,6 +5,9 @@ const lineColors = {
   gold: "bg-wssu-gold",
   teal: "bg-wssu-teal",
   lime: "bg-wssu-lime",
+  coral: "bg-wssu-coral",
+  violet: "bg-wssu-violet",
+  blue: "bg-wssu-blue",
   white: "bg-wssu-white",
 } as const;
 

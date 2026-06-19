@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type MouseEvent } from "react";
 import { cn } from "@/lib/utils";
 import { Logo } from "./Logo";
 import { DemoLink } from "./DemoLink";
@@ -53,24 +53,35 @@ export function Nav() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  const scrollToTop = (event: MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <>
       <div className="sticky top-0 z-50 h-20 md:h-[5.5rem]">
-        <div
-          className={cn(
-            "h-full transition-[padding] duration-300 ease-out",
-            scrolled ? "px-3 pt-3 md:px-5 md:pt-4" : "px-0 pt-0",
-          )}
-        >
-          <nav
+        <div className="section-header-container h-full">
+          <div
             className={cn(
-              "flex w-full items-center justify-between overflow-visible transition-[height,border-radius,background-color,box-shadow,padding-left,padding-right,backdrop-filter] duration-300 ease-out",
-              scrolled
-                ? "h-16 rounded-xl border border-wssu-black/15 bg-wssu-white px-5 shadow-[0_0_0_1px_rgba(9,9,11,0.06),0_16px_48px_-14px_rgba(9,9,11,0.42)] md:px-8"
-                : "h-full border-b border-wssu-black/10 bg-wssu-white/95 px-6 shadow-[0_1px_0_rgba(9,9,11,0.05)] backdrop-blur-md md:px-10",
+              "h-full transition-[padding] duration-300 ease-out",
+              scrolled ? "px-0 pt-3 md:pt-4" : "px-0 pt-0",
             )}
           >
-            <a href="/" className="flex shrink-0 items-center" aria-label="Winston-Salem State University home">
+            <nav
+              className={cn(
+                "flex w-full items-center justify-between overflow-visible transition-[height,border-radius,background-color,box-shadow,padding-left,padding-right,backdrop-filter] duration-300 ease-out",
+                scrolled
+                  ? "h-16 rounded-xl border border-wssu-black/15 bg-wssu-white px-5 shadow-[0_0_0_1px_rgba(9,9,11,0.06),0_16px_48px_-14px_rgba(9,9,11,0.42)] md:px-8"
+                  : "h-full border-b border-wssu-black/10 bg-wssu-white/95 shadow-[0_1px_0_rgba(9,9,11,0.05)] backdrop-blur-md",
+              )}
+            >
+            <a
+              href="/"
+              onClick={scrollToTop}
+              className="flex shrink-0 items-center"
+              aria-label="Winston-Salem State University home"
+            >
               <Logo
                 tone={scrolled ? "sticky" : "default"}
                 className={cn(
@@ -110,7 +121,8 @@ export function Nav() {
                 <MenuIcon open={menuOpen} /> Menu
               </WipeButton>
             </div>
-          </nav>
+            </nav>
+          </div>
         </div>
       </div>
 

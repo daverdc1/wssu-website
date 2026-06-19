@@ -23,6 +23,19 @@ const categoryStyles = Object.fromEntries(
   categories.map((c) => [c.name, { fill: c.fill, hoverText: c.hoverText }]),
 ) as Record<CategoryName, { fill: (typeof categories)[number]["fill"]; hoverText: (typeof categories)[number]["hoverText"] }>;
 
+const categoryLineColors: Record<
+  CategoryName,
+  "gold" | "teal" | "lime" | "coral" | "violet" | "blue" | "red"
+> = {
+  Academics: "gold",
+  Arts: "teal",
+  Community: "lime",
+  Health: "coral",
+  People: "violet",
+  Research: "blue",
+  Sports: "red",
+};
+
 const posts: {
   image: string;
   category: CategoryName;
@@ -143,16 +156,21 @@ function BlogCard({
         </span>
         <span>{post.read}</span>
       </div>
-      <h3 className="mt-4 font-display text-2xl uppercase leading-tight text-wssu-black underline-offset-2 decoration-wssu-black transition-[text-decoration-color] duration-300 group-hover:underline">
-        {post.title}
+      <h3 className="mt-4 font-display text-2xl uppercase leading-tight text-wssu-black">
+        <DemoLink className="block cursor-pointer text-left underline-offset-2 decoration-wssu-black transition-[text-decoration-color] duration-300 group-hover:underline">
+          {post.title}
+        </DemoLink>
       </h3>
       <p className="mt-3 text-sm leading-relaxed text-wssu-black/75">{post.excerpt}</p>
-      <DemoLink className="group/link mt-6 inline-flex flex-col items-start text-xs font-bold uppercase tracking-[0.15em] text-wssu-black/60 transition-colors hover:text-wssu-black">
+      <DemoLink className="group/link mt-6 inline-flex flex-col items-start text-xs font-bold uppercase tracking-[0.15em] text-wssu-black/60 transition-colors group-hover:text-wssu-black hover:text-wssu-black">
         <span className="inline-flex items-center gap-2">
           Read more
-          <ArrowRight className="size-4 transition-transform group-hover/link:translate-x-1" strokeWidth={2.5} />
+          <ArrowRight className="size-4 transition-transform group-hover:translate-x-1 group-hover/link:translate-x-1" strokeWidth={2.5} />
         </span>
-        <HoverAccentLine expandOn="group-hover/link:w-12" />
+        <HoverAccentLine
+          color={categoryLineColors[post.category]}
+          expandOn="group-hover:w-12 group-hover/link:w-12"
+        />
       </DemoLink>
     </article>
   );
@@ -169,13 +187,14 @@ function getScrollPaddingStart(container: HTMLElement) {
 
 export function Blog() {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const scrollingRef = useRef(false);
   const [current, setCurrent] = useState(0);
   const [canPrev, setCanPrev] = useState(false);
   const [canNext, setCanNext] = useState(true);
 
   const syncFromScroll = useCallback(() => {
     const container = scrollRef.current;
-    if (!container) return;
+    if (!container || scrollingRef.current) return;
 
     const cards = Array.from(
       container.querySelectorAll<HTMLElement>("[data-news-card]"),
@@ -184,6 +203,9 @@ export function Blog() {
 
     const padStart = getScrollPaddingStart(container);
     const anchor = container.scrollLeft + padStart;
+    const maxScroll = Math.max(0, container.scrollWidth - container.clientWidth);
+    const atEnd = container.scrollLeft >= maxScroll - 4;
+
     let next = 0;
     let minDistance = Number.POSITIVE_INFINITY;
 
@@ -195,9 +217,11 @@ export function Blog() {
       }
     });
 
+    if (atEnd) next = posts.length - 1;
+
     setCurrent(next);
     setCanPrev(next > 0);
-    setCanNext(next < posts.length - 1);
+    setCanNext(!atEnd && next < posts.length - 1);
   }, []);
 
   useLayoutEffect(() => {
@@ -224,36 +248,52 @@ export function Blog() {
     };
   }, [syncFromScroll]);
 
-  const scrollToIndex = (index: number) => {
+  const scrollToIndex = useCallback((index: number) => {
     const container = scrollRef.current;
     if (!container) return;
 
-    const card = container.querySelectorAll<HTMLElement>("[data-news-card]")[index];
+    const clamped = Math.max(0, Math.min(posts.length - 1, index));
+    const card = container.querySelectorAll<HTMLElement>("[data-news-card]")[clamped];
     if (!card) return;
 
     const padStart = getScrollPaddingStart(container);
+    const targetLeft = Math.max(0, card.offsetLeft - padStart);
+    const isRapid = scrollingRef.current;
+
+    scrollingRef.current = true;
+    setCurrent(clamped);
+    setCanPrev(clamped > 0);
+    setCanNext(clamped < posts.length - 1);
 
     container.scrollTo({
-      left: Math.max(0, card.offsetLeft - padStart),
-      behavior: "smooth",
+      left: targetLeft,
+      behavior: isRapid ? "auto" : "smooth",
     });
-  };
+
+    const release = () => {
+      scrollingRef.current = false;
+      syncFromScroll();
+    };
+
+    container.addEventListener("scrollend", release, { once: true });
+    window.setTimeout(release, isRapid ? 80 : 300);
+  }, [syncFromScroll]);
 
   return (
     <section className="bg-wssu-white py-24 md:py-32">
       <div className="section-header-container">
-        <div className="grid grid-cols-1 gap-y-8 md:grid-cols-12 md:items-stretch md:gap-x-0 md:gap-y-8">
+        <div className="grid grid-cols-1 gap-y-8 md:grid-cols-12 md:items-end md:gap-x-0 md:gap-y-8">
           <SectionHeaderLabelRow label="(07) — News" />
           <h2 className="font-display flex flex-col gap-y-[0.04em] text-5xl uppercase leading-[0.95] md:col-span-5 md:text-7xl">
-            <span className="text-wssu-cream-ink">Ramily</span>
-            <span className="text-wssu-black">News</span>
+            <span className="text-wssu-black">Ramily</span>
+            <span className="text-wssu-black">News.</span>
           </h2>
-          <div className="section-intro-grid flex min-h-full max-w-none flex-col items-end">
-            <div className="mt-auto flex w-full flex-wrap items-center justify-end gap-3">
+          <div className="section-intro-grid flex flex-col justify-end">
+            <div className="flex w-full flex-wrap items-center justify-end gap-3">
               <div className="flex shrink-0 items-center">
                 <ConnectedArrowControls
-                  onPrev={() => scrollToIndex(Math.max(0, current - 1))}
-                  onNext={() => scrollToIndex(Math.min(posts.length - 1, current + 1))}
+                  onPrev={() => scrollToIndex(current - 1)}
+                  onNext={() => scrollToIndex(current + 1)}
                   canPrev={canPrev}
                   canNext={canNext}
                   prevLabel="Previous article"

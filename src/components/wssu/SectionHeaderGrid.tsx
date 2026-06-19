@@ -10,6 +10,7 @@ type SectionHeaderGridProps = {
   tone?: Tone;
   headlineClassName?: string;
   asideClassName?: string;
+  introWave?: boolean;
 };
 
 const labelText: Record<Tone, string> = {
@@ -119,13 +120,25 @@ export function SectionHeaderGrid({
   tone = "light",
   headlineClassName,
   asideClassName,
+  introWave = true,
 }: SectionHeaderGridProps) {
   return (
-    <div className="grid grid-cols-1 gap-y-8 md:grid-cols-12 md:items-stretch md:gap-x-0 md:gap-y-8">
+    <div className="grid grid-cols-1 gap-y-8 md:grid-cols-12 md:items-center md:gap-x-0 md:gap-y-8">
       <SectionHeaderLabelRow label={label} tone={tone} />
       <div className={cn("md:col-span-5", headlineClassName)}>{headline}</div>
-      <div className={cn("section-intro-grid flex min-h-full flex-col items-end", asideClassName)}>
-        <div className="mt-auto">{aside}</div>
+      <div className={cn("section-intro-grid flex min-h-0 flex-col justify-center", asideClassName)}>
+        {introWave ? (
+          <div
+            className={cn(
+              "section-intro-wave-wrap w-full",
+              tone === "dark" && "section-intro-wave-wrap--dark",
+            )}
+          >
+            {aside}
+          </div>
+        ) : (
+          <div className="w-full">{aside}</div>
+        )}
       </div>
     </div>
   );

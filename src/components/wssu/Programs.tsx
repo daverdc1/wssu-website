@@ -168,7 +168,7 @@ export function Programs() {
           label="(02) — Find Your Program"
           headline={
             <h2 className="font-display flex flex-col gap-y-[0.04em] text-5xl uppercase leading-[0.95] md:text-7xl">
-              <span className="text-wssu-cream-ink">Find Your</span>
+              <span className="text-wssu-black">Find Your</span>
               <span className="text-wssu-black">Program.</span>
             </h2>
           }

@@ -1,4 +1,5 @@
 import { Facebook, Instagram, Linkedin, Twitter, Youtube } from "lucide-react";
+import type { MouseEvent } from "react";
 import { Logo } from "./Logo";
 import { DemoLink } from "./DemoLink";
 import { HoverAccentLine } from "./HoverAccentLine";
@@ -25,6 +26,11 @@ const socialLinks = [
 ] as const;
 
 export function Footer() {
+  const scrollToTop = (event: MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <footer className="bg-wssu-black text-wssu-white">
       <div className="flex h-1 w-full" aria-hidden="true">
@@ -32,10 +38,17 @@ export function Footer() {
         <span className="flex-1 bg-wssu-teal" />
         <span className="flex-1 bg-wssu-lime" />
       </div>
-      <div className="section-header-container pb-12 pt-12 md:pt-16">
+      <div className="section-header-container pt-12 pb-2 md:pt-16 md:pb-3">
         <div className="grid grid-cols-1 gap-16 border-b border-wssu-white/15 pb-16 lg:grid-cols-12">
           <div className="space-y-8 font-sans lg:col-span-4">
-            <Logo tone="footer" className="h-[3.75rem] w-auto md:h-[3.75rem]" />
+            <a
+              href="/"
+              onClick={scrollToTop}
+              aria-label="Winston-Salem State University home"
+              className="block w-fit"
+            >
+              <Logo tone="footer" className="h-[3.75rem] w-auto md:h-[3.75rem]" />
+            </a>
 
             <div>
               <p className="text-base font-semibold text-wssu-white">Address</p>
@@ -75,7 +88,7 @@ export function Footer() {
             </div>
           </div>
 
-          <div className="grid w-full grid-cols-2 gap-12 lg:col-span-6 lg:col-start-7 lg:w-auto lg:justify-self-end lg:gap-28">
+          <div className="grid w-full grid-cols-2 gap-10 lg:col-span-8 lg:col-start-5 lg:gap-16 xl:gap-20">
             {linkCols.map((links) => (
               <ul key={links[0]} className="space-y-3 font-sans text-base">
                 {links.map((l) => (
@@ -92,8 +105,8 @@ export function Footer() {
         </div>
       </div>
 
-      <div className="section-container pb-12">
-        <div className="flex flex-col items-start justify-between gap-4 pt-8 font-sans text-xs text-wssu-white/70 md:flex-row md:items-center">
+      <div className="section-container pb-10">
+        <div className="flex flex-col items-start justify-between gap-4 pt-2 font-sans text-xs text-wssu-white/70 md:flex-row md:items-center">
           <p>© {new Date().getFullYear()} Winston-Salem State University. All rights reserved.</p>
           <div className="flex flex-wrap gap-x-3 gap-y-2 md:ml-auto md:justify-end md:gap-x-4">
             {legalLinks.map((l) => (

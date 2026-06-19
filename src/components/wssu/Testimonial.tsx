@@ -73,7 +73,10 @@ export function Testimonial() {
     { bg: "bg-wssu-lime", text: "text-wssu-black" },
   ] as const;
 
+  const quoteAccents = ["text-wssu-gold", "text-wssu-teal", "text-wssu-lime"] as const;
+
   const badgeAccent = badgeAccents[i];
+  const quoteAccent = quoteAccents[i];
 
   return (
     <section className="bg-wssu-paper py-24 md:py-32">
@@ -99,7 +102,7 @@ export function Testimonial() {
             </div>
             <div
               className={cn(
-                "absolute -bottom-4 -right-4 flex size-28 -rotate-6 items-center justify-center rounded-full px-3 text-center transition-colors duration-500 md:size-32",
+                "absolute -bottom-4 -left-4 flex size-28 -rotate-6 items-center justify-center rounded-full px-3 text-center transition-colors duration-500 md:size-32",
                 badgeAccent.bg,
                 badgeAccent.text,
               )}
@@ -114,29 +117,49 @@ export function Testimonial() {
             <div className="flex flex-1 flex-col lg:min-h-0">
               <div className="flex flex-1 items-center lg:min-h-0">
                 <div className="w-full">
-                  <blockquote
-                    key={`quote-${i}`}
-                    className={cn(
-                      "testimonial-quote",
-                      direction === 1 ? "testimonial-content-next" : "testimonial-content-prev",
-                    )}
-                  >
-                    <span className="testimonial-quote__open" aria-hidden="true">
-                      “
-                    </span>
-                    <p className="testimonial-quote__text">{s.quote}</p>
-                  </blockquote>
-                  <div
-                    key={`meta-${i}`}
-                    className={cn(
-                      "mt-10",
-                      direction === 1 ? "testimonial-content-next" : "testimonial-content-prev",
-                    )}
-                  >
-                    <p className="font-display text-xl uppercase">{s.name}</p>
-                    <p className="mt-1 text-xs font-semibold uppercase tracking-[0.2em] text-wssu-black/60">
-                      {s.role}
-                    </p>
+                  <div className="testimonial-quote__body">
+                    <blockquote
+                      key={`quote-${i}`}
+                      className={cn(
+                        "testimonial-quote",
+                        direction === 1 ? "testimonial-content-next" : "testimonial-content-prev",
+                      )}
+                    >
+                      <span
+                        className={cn("testimonial-quote__open transition-colors duration-500", quoteAccent)}
+                        aria-hidden="true"
+                      >
+                        “
+                      </span>
+                      <p className="testimonial-quote__text">{s.quote}</p>
+                    </blockquote>
+
+                    <div className="testimonial-quote__meta mt-10 grid grid-cols-[minmax(0,1fr)_auto] items-start gap-6">
+                      <div
+                        key={`meta-${i}`}
+                        className={cn(
+                          direction === 1 ? "testimonial-content-next" : "testimonial-content-prev",
+                        )}
+                      >
+                        <p className="font-display text-xl uppercase">{s.name}</p>
+                        <p className="mt-1 text-xs font-semibold uppercase tracking-[0.2em] text-wssu-black/60">
+                          {s.role}
+                        </p>
+                      </div>
+                      <div
+                        key={`quote-close-${i}`}
+                        className={cn(
+                          direction === 1 ? "testimonial-content-next" : "testimonial-content-prev",
+                        )}
+                      >
+                        <span
+                          className={cn("testimonial-quote__close transition-colors duration-500", quoteAccent)}
+                          aria-hidden="true"
+                        >
+                          ”
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>

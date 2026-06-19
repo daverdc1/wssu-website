@@ -88,7 +88,7 @@ function WhyPhotoPanel({
   const accent = accentStyles[active.accent];
 
   return (
-    <div className="photo-corner-cut relative w-full h-[clamp(18rem,calc(100dvh-10rem),calc(100dvh-7rem))] overflow-hidden bg-wssu-black/5">
+    <div className="photo-corner-cut relative w-full max-h-[820px] overflow-hidden bg-wssu-black/5 aspect-[4/5] lg:aspect-auto lg:h-[min(820px,calc(100vh-8rem))]">
       <img
         key={displayed.image}
         src={displayed.image}
@@ -129,6 +129,9 @@ export function WhyWSSU() {
   const [transitionId, setTransitionId] = useState(0);
   const [imageReveal, setImageReveal] = useState(true);
   const [fillProgress, setFillProgress] = useState<number[]>(() =>
+    highlights.map(() => 0),
+  );
+  const [centerVisibility, setCenterVisibility] = useState<number[]>(() =>
     highlights.map(() => 0),
   );
   const articleRefs = useRef<(HTMLElement | null)[]>([]);
@@ -182,6 +185,9 @@ export function WhyWSSU() {
           const index = Number((entry.target as HTMLElement).dataset.index);
           ratios.set(index, entry.intersectionRatio);
         }
+        setCenterVisibility(
+          highlights.map((_, index) => ratios.get(index) ?? 0),
+        );
         syncActive();
         updateFillProgress();
       },
@@ -215,10 +221,10 @@ export function WhyWSSU() {
               <span>There are</span>
               <span>hundreds of</span>
               <span>universities.</span>
-              <span className="text-wssu-red">
-                There's only one{" "}
-                <span className="relative inline-block">
-                  WSSU.
+              <span className="flex flex-col text-wssu-red">
+                <span>There&apos;s only</span>
+                <span className="relative inline-block w-fit">
+                  one WSSU.
                   <MarkerCircle
                     rotate={-3}
                     tone="on-red"
@@ -238,29 +244,26 @@ export function WhyWSSU() {
 
       <div className="section-container">
         <div className="mt-16 grid grid-cols-1 items-start gap-10 lg:grid-cols-12 lg:gap-12 lg:pt-4">
-          <div className="flex flex-col lg:col-span-7 lg:pb-[30vh]">
+          <div className="flex flex-col lg:col-span-7 lg:pb-8">
             {highlights.map((item, index) => (
               <div
                 key={item.title}
-                className={cn(
-                  "relative flex items-center",
-                  index < highlights.length - 1 && "pb-12 lg:pb-16",
-                )}
+                className="relative py-12 md:py-16 lg:py-20"
               >
-                <div className="relative w-full pl-5 md:pl-6">
+                <div
+                  className="absolute left-0 top-0 bottom-0 w-1 overflow-hidden bg-wssu-black/10"
+                  aria-hidden="true"
+                >
                   <div
-                    className="absolute left-0 top-1/2 h-[calc(100%+4rem)] w-1 -translate-y-1/2 overflow-hidden bg-wssu-black/10 lg:h-[calc(100%+5rem)]"
-                    aria-hidden="true"
-                  >
-                    <div
-                      className={cn(
-                        "absolute inset-x-0 top-0 transition-[height] duration-150 ease-out will-change-[height]",
-                        accentStyles[item.accent].wipe,
-                      )}
-                      style={{ height: `${(fillProgress[index] ?? 0) * 100}%` }}
-                    />
-                  </div>
+                    className={cn(
+                      "absolute inset-x-0 top-0 transition-[height] duration-150 ease-out will-change-[height]",
+                      accentStyles[item.accent].wipe,
+                    )}
+                    style={{ height: `${(fillProgress[index] ?? 0) * 100}%` }}
+                  />
+                </div>
 
+                <div className="relative w-full pl-5 md:pl-6">
                   <article
                     ref={(el) => {
                       articleRefs.current[index] = el;
@@ -268,7 +271,7 @@ export function WhyWSSU() {
                     data-index={index}
                     className={cn(
                       "relative transition-opacity duration-500 ease-out",
-                      index === activeIndex ? "opacity-100" : "opacity-35",
+                      (centerVisibility[index] ?? 0) > 0 ? "opacity-100" : "opacity-35",
                     )}
                   >
                     <WhyPhotoMobile index={index} />

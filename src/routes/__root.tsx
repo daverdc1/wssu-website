@@ -10,6 +10,11 @@ import {
 import type { ReactNode } from "react";
 
 import appCss from "../styles.css?url";
+import antonLatin400 from "@fontsource/anton/files/anton-latin-400-normal.woff2?url";
+import instrumentSansLatin400 from "@fontsource/instrument-sans/files/instrument-sans-latin-400-normal.woff2?url";
+import instrumentSansLatin500 from "@fontsource/instrument-sans/files/instrument-sans-latin-500-normal.woff2?url";
+import instrumentSansLatin600 from "@fontsource/instrument-sans/files/instrument-sans-latin-600-normal.woff2?url";
+import instrumentSansLatin700 from "@fontsource/instrument-sans/files/instrument-sans-latin-700-normal.woff2?url";
 
 function NotFoundComponent() {
   return (
@@ -90,6 +95,41 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
+      {
+        rel: "preload",
+        href: antonLatin400,
+        as: "font",
+        type: "font/woff2",
+        crossOrigin: "anonymous",
+      },
+      {
+        rel: "preload",
+        href: instrumentSansLatin400,
+        as: "font",
+        type: "font/woff2",
+        crossOrigin: "anonymous",
+      },
+      {
+        rel: "preload",
+        href: instrumentSansLatin500,
+        as: "font",
+        type: "font/woff2",
+        crossOrigin: "anonymous",
+      },
+      {
+        rel: "preload",
+        href: instrumentSansLatin600,
+        as: "font",
+        type: "font/woff2",
+        crossOrigin: "anonymous",
+      },
+      {
+        rel: "preload",
+        href: instrumentSansLatin700,
+        as: "font",
+        type: "font/woff2",
+        crossOrigin: "anonymous",
+      },
       {
         rel: "stylesheet",
         href: appCss,

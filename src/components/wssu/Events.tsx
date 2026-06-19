@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
-import { ArrowRight, Clock, MapPin } from "lucide-react";
+import { ArrowRight, Calendar, Clock, MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { DemoLink } from "./DemoLink";
 import { HoverAccentLine } from "./HoverAccentLine";
 import { SubnavArrow } from "./SubnavArrow";
-import { SectionHeaderGrid } from "./SectionHeaderGrid";
+import { SectionHeaderLabelRow } from "./SectionHeaderGrid";
 
 type EventCategory = "Admissions" | "Campus" | "Virtual" | "Athletics";
 
@@ -67,9 +67,53 @@ const events: EventItem[] = [
   },
 ];
 
+const eventCategoryStyles: Record<
+  EventCategory,
+  {
+    dateBg: string;
+    dateText: string;
+    lineColor: "gold" | "teal" | "lime" | "violet" | "red";
+    hoverBorder: string;
+  }
+> = {
+  Admissions: {
+    dateBg: "bg-wssu-gold",
+    dateText: "text-wssu-black",
+    lineColor: "gold",
+    hoverBorder: "hover:border-wssu-gold/50",
+  },
+  Campus: {
+    dateBg: "bg-wssu-teal",
+    dateText: "text-wssu-white",
+    lineColor: "teal",
+    hoverBorder: "hover:border-wssu-teal/45",
+  },
+  Virtual: {
+    dateBg: "bg-wssu-lime",
+    dateText: "text-wssu-black",
+    lineColor: "lime",
+    hoverBorder: "hover:border-wssu-lime/45",
+  },
+  Athletics: {
+    dateBg: "bg-wssu-red",
+    dateText: "text-wssu-white",
+    lineColor: "red",
+    hoverBorder: "hover:border-wssu-red/45",
+  },
+};
+
 function EventDate({ event }: { event: EventItem }) {
+  const styles = eventCategoryStyles[event.category];
+
   return (
-    <div className="photo-corner-cut relative flex size-[3.75rem] shrink-0 flex-col bg-wssu-red text-wssu-white transition-colors duration-300 group-hover:bg-wssu-red-hover [--photo-cut:0.9rem] md:size-[4.25rem] md:[--photo-cut:1rem]">
+    <div
+      className={cn(
+        "photo-corner-cut relative flex size-[3.75rem] shrink-0 flex-col transition-colors duration-300 [--photo-cut:0.9rem] md:size-[4.25rem] md:[--photo-cut:1rem]",
+        styles.dateBg,
+        styles.dateText,
+        "group-hover:brightness-95",
+      )}
+    >
       <p className="px-1.5 pt-2 font-mono text-[9px] font-bold uppercase tracking-[0.2em] md:px-2 md:pt-2">
         {event.month}
       </p>
@@ -158,118 +202,123 @@ export function Events() {
   return (
     <section id="events" className="bg-wssu-paper py-24 md:py-32">
       <div className="section-header-container">
-        <SectionHeaderGrid
-          label="(08) — Events"
-          asideClassName="max-w-none"
-          headline={
-            <h2 className="font-display flex flex-col gap-y-[0.04em] text-5xl uppercase leading-[0.95] md:text-7xl">
-              <span className="text-wssu-cream-ink">Upcoming</span>
-              <span className="text-wssu-black">Events.</span>
-            </h2>
-          }
-          aside={
-            <div className="flex w-full flex-wrap items-center justify-end">
-              <DemoLink className="shrink-0 border border-wssu-black px-6 py-3.5 text-xs font-bold uppercase tracking-[0.15em] text-wssu-black transition-colors hover:bg-wssu-black hover:text-wssu-white">
-                Full calendar
-              </DemoLink>
-            </div>
-          }
-        />
+        <SectionHeaderLabelRow label="(08) — Events" />
       </div>
 
-      <div className="section-container">
-        <div className="mt-16 lg:grid lg:grid-cols-12 lg:items-start lg:gap-12">
-          <nav
-            aria-label="Event categories"
-            className="mb-10 lg:sticky lg:top-28 lg:col-span-4 lg:mb-0 lg:self-start"
-          >
-            <ul ref={navRef} className="relative divide-y divide-wssu-black/15">
-              <span
-                aria-hidden="true"
-                className="absolute inset-x-0 bg-wssu-black transition-[top,height] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-[top,height]"
-                style={{
-                  top: indicatorStyle.top,
-                  height: indicatorStyle.height,
-                }}
-              />
-              {filterSegments.map((segment, index) => {
-                const isActive = segment.value === activeFilter;
+      <div className="section-container mt-12 md:mt-16">
+        <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-12 lg:gap-12">
+          <div className="lg:col-span-4 lg:sticky lg:top-28 lg:self-start">
+            <h2 className="font-display flex flex-col gap-y-[0.04em] text-5xl uppercase leading-[0.95] md:text-7xl">
+              <span className="text-wssu-black">Upcoming</span>
+              <span className="text-wssu-black">Events.</span>
+            </h2>
 
-                return (
-                  <li
-                    key={segment.value}
-                    ref={(el) => {
-                      itemRefs.current[index] = el;
-                    }}
-                    className="relative z-10"
-                  >
-                    <button
-                      type="button"
-                      onClick={() => handleFilterChange(segment.value)}
-                      aria-current={isActive ? "true" : undefined}
-                      className={cn(
-                        "group flex w-full items-center justify-between px-4 py-3 text-left transition-colors duration-300 md:px-5 md:py-4",
-                        isActive
-                          ? "text-wssu-white"
-                          : "text-wssu-black/80 hover:bg-wssu-white/45 hover:text-wssu-black",
-                      )}
+            <nav aria-label="Event categories" className="mt-10">
+              <ul ref={navRef} className="relative divide-y divide-wssu-black/15">
+                <span
+                  aria-hidden="true"
+                  className="absolute inset-x-0 bg-wssu-black transition-[top,height] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-[top,height]"
+                  style={{
+                    top: indicatorStyle.top,
+                    height: indicatorStyle.height,
+                  }}
+                />
+                {filterSegments.map((segment, index) => {
+                  const isActive = segment.value === activeFilter;
+
+                  return (
+                    <li
+                      key={segment.value}
+                      ref={(el) => {
+                        itemRefs.current[index] = el;
+                      }}
+                      className="relative z-10"
                     >
-                      <span className="font-sans text-base font-bold leading-snug md:text-lg">
-                        {segment.label}
-                      </span>
-                      <SubnavArrow active={isActive} activeClassName="text-wssu-white" />
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
-          </nav>
+                      <button
+                        type="button"
+                        onClick={() => handleFilterChange(segment.value)}
+                        aria-current={isActive ? "true" : undefined}
+                        className={cn(
+                          "group flex w-full items-center justify-between px-4 py-3 text-left transition-colors duration-300 md:px-5 md:py-4",
+                          isActive
+                            ? "text-wssu-white"
+                            : "text-wssu-black/80 hover:bg-wssu-white/45 hover:text-wssu-black",
+                        )}
+                      >
+                        <span className="font-sans text-base font-bold leading-snug md:text-lg">
+                          {segment.label}
+                        </span>
+                        <SubnavArrow active={isActive} activeClassName="text-wssu-white" />
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            </nav>
+
+            <DemoLink className="mt-6 inline-flex items-center gap-2 border border-wssu-black px-6 py-3.5 text-xs font-bold uppercase tracking-[0.15em] text-wssu-black transition-colors hover:bg-wssu-black hover:text-wssu-white">
+              <Calendar className="size-3.5" strokeWidth={2.25} aria-hidden="true" />
+              Full calendar
+            </DemoLink>
+          </div>
 
           <div className="lg:col-span-8">
-            <div key={listKey} className="events-list-enter divide-y divide-wssu-black/15">
+            <div key={listKey} className="events-list-enter space-y-4">
               {visibleEvents.length === 0 ? (
-                <p className="py-12 font-sans text-lg italic leading-relaxed text-wssu-black/60 md:text-xl">
+                <p className="border border-wssu-black/10 bg-wssu-white/60 px-6 py-12 font-sans text-lg italic leading-relaxed text-wssu-black/60 md:px-8 md:text-xl">
                   No events in this category right now. Check back soon.
                 </p>
               ) : (
-                visibleEvents.map((event, index) => (
-                  <article
-                    key={event.id}
-                    className="group flex flex-col gap-5 py-8 transition-colors duration-300 hover:bg-wssu-white/45 md:flex-row md:items-start md:gap-6 md:px-4 md:py-8"
-                    style={{ "--event-delay": `${index * 70}ms` } as CSSProperties}
-                  >
-                    <EventDate event={event} />
+                visibleEvents.map((event, index) => {
+                  const accent = eventCategoryStyles[event.category];
 
-                    <div className="min-w-0 flex-1 space-y-3">
-                      <div className="space-y-2">
-                        <h3 className="font-display text-2xl uppercase leading-tight text-wssu-black underline-offset-2 decoration-wssu-black transition-[text-decoration-color] duration-300 group-hover:underline">
-                          {event.title}
-                        </h3>
-                        {event.tag ? (
-                          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-wssu-red">
-                            {event.tag}
-                          </p>
-                        ) : null}
-                        <EventMeta event={event} />
-                      </div>
+                  return (
+                    <article
+                      key={event.id}
+                      className={cn(
+                        "group flex flex-col gap-5 border border-wssu-black/10 bg-wssu-white/60 p-6 transition-[background-color,border-color] duration-300 hover:bg-wssu-white/90 md:flex-row md:items-start md:gap-6 md:p-8",
+                        accent.hoverBorder,
+                      )}
+                      style={{ "--event-delay": `${index * 70}ms` } as CSSProperties}
+                    >
+                      <EventDate event={event} />
 
-                      <p className="max-w-2xl text-sm leading-relaxed text-wssu-black/70 md:text-base">
-                        {event.description}
-                      </p>
+                      <div className="min-w-0 flex-1 space-y-3">
+                        <div className="space-y-2">
+                          <h3 className="font-display text-2xl uppercase leading-tight text-wssu-black">
+                            <DemoLink className="block cursor-pointer text-left underline-offset-2 decoration-wssu-black transition-[text-decoration-color] duration-300 group-hover:underline">
+                              {event.title}
+                            </DemoLink>
+                          </h3>
+                          {event.tag ? (
+                            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-wssu-red">
+                              {event.tag}
+                            </p>
+                          ) : null}
+                          <EventMeta event={event} />
+                        </div>
 
-                      <DemoLink className="group/link inline-flex flex-col items-start text-xs font-bold uppercase tracking-[0.15em] text-wssu-black transition-colors hover:text-wssu-red">
-                        <span className="inline-flex items-center gap-2">
-                          Save my spot
-                          <ArrowRight
-                            className="size-4 transition-transform group-hover/link:translate-x-1"
-                            strokeWidth={2.5}
+                        <p className="max-w-2xl text-sm leading-relaxed text-wssu-black/70 md:text-base">
+                          {event.description}
+                        </p>
+
+                        <DemoLink className="group/link inline-flex flex-col items-start text-xs font-bold uppercase tracking-[0.15em] text-wssu-black/60 transition-colors group-hover:text-wssu-black hover:text-wssu-black">
+                          <span className="inline-flex items-center gap-2">
+                            Save my spot
+                            <ArrowRight
+                              className="size-4 transition-transform group-hover:translate-x-1 group-hover/link:translate-x-1"
+                              strokeWidth={2.5}
+                            />
+                          </span>
+                          <HoverAccentLine
+                            color={accent.lineColor}
+                            expandOn="group-hover:w-12 group-hover/link:w-12"
                           />
-                        </span>
-                        <HoverAccentLine />
-                      </DemoLink>
-                    </div>
-                  </article>
-                ))
+                        </DemoLink>
+                      </div>
+                    </article>
+                  );
+                })
               )}
             </div>
           </div>

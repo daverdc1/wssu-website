@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   announcementStorageKey,
@@ -12,20 +12,24 @@ const priorities: { value: AnnouncementPriority; label: string }[] = [
   { value: "high", label: "High" },
 ];
 
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
 export function DevPanel() {
   const [open, setOpen] = useState(false);
   const { announcement, updateAnnouncement, resetAnnouncementDismiss } = useDevSettings();
 
   if (!import.meta.env.DEV) return null;
 
+  const handleAnnouncementChange = (patch: Parameters<typeof updateAnnouncement>[0]) => {
+    updateAnnouncement(patch);
+    scrollToTop();
+  };
+
   return (
-    <div className="pointer-events-none fixed right-0 top-28 z-[200] font-sans text-xs text-wssu-black">
-      <div
-        className={cn(
-          "pointer-events-auto flex flex-row-reverse items-start overflow-hidden border border-r-0 border-wssu-black/12 bg-wssu-white shadow-[-8px_0_28px_-12px_rgba(9,9,11,0.28)] transition-shadow",
-          open && "rounded-l-sm",
-        )}
-      >
+    <div className="pointer-events-none fixed bottom-6 left-6 z-[200] font-sans text-xs text-wssu-black">
+      <div className="pointer-events-auto flex items-end gap-0">
         <button
           type="button"
           onClick={() => setOpen((value) => !value)}
@@ -33,29 +37,25 @@ export function DevPanel() {
           aria-controls="wssu-dev-panel"
           aria-label={open ? "Close announcement controls" : "Open announcement controls"}
           className={cn(
-            "flex size-7 shrink-0 items-center justify-center text-wssu-black/65 transition-colors",
-            "hover:bg-wssu-paper hover:text-wssu-teal",
-            open && "border-l border-wssu-black/12",
-            open && "text-wssu-teal",
+            "flex size-9 shrink-0 items-center justify-center rounded-full border border-wssu-black/12 bg-wssu-white text-wssu-black/65 shadow-[0_8px_28px_-12px_rgba(9,9,11,0.35)] transition-[color,background-color,transform,border-color] duration-300 ease-out",
+            "hover:border-wssu-teal/35 hover:bg-wssu-paper hover:text-wssu-teal",
+            open && "border-wssu-teal/35 text-wssu-teal",
           )}
         >
-          {open ? (
-            <ChevronRight className="size-3.5" strokeWidth={2.25} />
-          ) : (
-            <ChevronLeft className="size-3.5" strokeWidth={2.25} />
-          )}
+          <Settings className="size-4" strokeWidth={2.25} />
         </button>
 
         <aside
           id="wssu-dev-panel"
           aria-hidden={!open}
           className={cn(
-            "overflow-hidden transition-[width,max-height] duration-300 ease-out",
-            open ? "w-40 max-h-96" : "h-0 w-0 max-h-0",
+            "origin-bottom-left overflow-hidden rounded-sm border border-wssu-black/12 bg-wssu-white shadow-[0_12px_40px_-16px_rgba(9,9,11,0.45)] transition-[opacity,transform] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-[opacity,transform]",
+            open
+              ? "pointer-events-auto w-40 translate-x-0 scale-100 opacity-100"
+              : "pointer-events-none w-40 -translate-x-4 scale-[0.98] opacity-0",
           )}
         >
-          {open ? (
-            <div className="w-40 px-3 py-3">
+          <div className="w-40 px-3 py-3">
             <p className="mb-3 font-sans text-[11px] font-bold uppercase tracking-[0.1em] text-wssu-black/80">
               Banner
             </p>
@@ -70,7 +70,7 @@ export function DevPanel() {
                     localStorage.removeItem(announcementStorageKey(announcement.id));
                     resetAnnouncementDismiss();
                   }
-                  updateAnnouncement({ enabled });
+                  handleAnnouncementChange({ enabled });
                 }}
                 className="size-3.5 accent-wssu-teal"
               />
@@ -87,7 +87,7 @@ export function DevPanel() {
                     key={value}
                     type="button"
                     disabled={!announcement.enabled}
-                    onClick={() => updateAnnouncement({ priority: value })}
+                    onClick={() => handleAnnouncementChange({ priority: value })}
                     className={cn(
                       "flex-1 rounded border px-2 py-1.5 text-[11px] font-medium transition-colors",
                       announcement.priority === value
@@ -101,8 +101,7 @@ export function DevPanel() {
                 ))}
               </div>
             </fieldset>
-            </div>
-          ) : null}
+          </div>
         </aside>
       </div>
     </div>

@@ -121,7 +121,7 @@ export function HeroVideoProvider({ children }: { children: ReactNode }) {
   const playerRef = useRef<YouTubePlayer | null>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
   const [videoEnabled, setVideoEnabled] = useState(true);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(true);
   const [playerReady, setPlayerReady] = useState(false);
 
   const showVideo = videoEnabled && !prefersReducedMotion;
@@ -223,25 +223,23 @@ export function HeroVideoProvider({ children }: { children: ReactNode }) {
 
 export function HeroVideoLayer() {
   const { playerHostId, showVideo, isPlaying, playerReady } = useHeroVideo();
-  const showCover = !playerReady;
 
   return (
     <>
       {showVideo ? (
-        <div className="absolute inset-0 overflow-hidden opacity-65" aria-hidden="true">
+        <div
+          className={cn(
+            "absolute inset-0 overflow-hidden transition-opacity duration-700",
+            playerReady ? "opacity-65" : "opacity-0",
+          )}
+          aria-hidden="true"
+        >
           <div className="hero-video-frame pointer-events-none absolute">
             <div
               id={playerHostId}
               className="size-full [&_iframe]:size-full [&_iframe]:pointer-events-none"
             />
           </div>
-          {showCover ? (
-            <img
-              src={hero}
-              alt=""
-              className="absolute inset-0 z-[3] size-full object-cover"
-            />
-          ) : null}
           {playerReady ? (
             <div
               className="hero-video-controls-mask pointer-events-none absolute inset-0 z-[4]"
@@ -302,6 +300,8 @@ export function HeroVideoControls() {
 
   if (!visible) return null;
 
+  const showAsPlaying = !playerReady || isPlaying;
+
   const buttonClass = cn(
     "inline-flex items-center gap-2 border border-wssu-white/25 bg-wssu-black/50 px-3 py-2 text-[10px] font-bold uppercase tracking-[0.18em] text-wssu-white backdrop-blur-sm transition-colors",
     "hover:border-wssu-white/45",
@@ -313,15 +313,15 @@ export function HeroVideoControls() {
       type="button"
       onClick={togglePlayback}
       disabled={!playerReady}
-      aria-label={isPlaying ? "Pause background video" : "Play background video"}
+      aria-label={showAsPlaying ? "Pause background video" : "Play background video"}
       className={cn(buttonClass, !playerReady && "cursor-wait opacity-70")}
     >
-      {isPlaying ? (
+      {showAsPlaying ? (
         <Pause className="size-3.5" strokeWidth={2.25} aria-hidden="true" />
       ) : (
         <Play className="size-3.5" strokeWidth={2.25} aria-hidden="true" />
       )}
-      <span>{isPlaying ? "Pause video" : "Play video"}</span>
+      <span>{showAsPlaying ? "Pause video" : "Play video"}</span>
     </button>
   ) : (
     <button

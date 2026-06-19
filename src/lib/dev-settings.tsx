@@ -20,7 +20,7 @@ export type AnnouncementSettings = {
 export const defaultAnnouncementSettings: AnnouncementSettings = {
   enabled: true,
   id: "fall-2026-deadline",
-  priority: "high",
+  priority: "normal",
   message: "Fall 2026 priority application deadline is March 15.",
   ctaLabel: "Apply now",
 };

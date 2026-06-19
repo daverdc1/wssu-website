@@ -35,7 +35,7 @@ export function RamilyCTA() {
       id="apply"
       className={cn("cta-split overflow-hidden", inView && "cta-in-view")}
     >
-      <div className="grid grid-cols-1 lg:grid-cols-2 lg:min-h-[min(85vh,920px)]">
+      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:min-h-[min(85vh,920px)]">
         <div className="relative min-h-[55vh] overflow-hidden lg:min-h-full">
           <img
             src={ctaImage}
@@ -44,7 +44,7 @@ export function RamilyCTA() {
           />
         </div>
 
-        <div className="@container flex min-w-0 flex-col justify-between bg-wssu-red px-8 py-14 text-wssu-black md:px-12 md:py-20 lg:px-14 lg:py-24">
+        <div className="@container flex min-h-[55vh] min-w-0 flex-col justify-center bg-wssu-red px-8 py-14 text-wssu-black md:px-12 md:py-20 lg:min-h-full lg:px-14 lg:py-24">
           <div className="min-w-0">
             <h2 className="font-display flex w-full max-w-full flex-col gap-y-[0.02em] text-[clamp(3.25rem,24cqw,9rem)] uppercase leading-[0.9] tracking-[-0.03em]">
               {headlineLines.map((line, index) => (
@@ -63,23 +63,23 @@ export function RamilyCTA() {
             >
               Take the next step toward your future at WSSU.
             </p>
-          </div>
 
-          <div
-            className="cta-reveal mt-12 flex flex-wrap gap-3 lg:mt-16"
-            style={{ "--cta-delay": "500ms" } as CSSProperties}
-          >
-            <WipeButton
-              wipeFill="red"
-              className="group font-display inline-flex items-center gap-3 border border-wssu-black bg-wssu-black px-8 py-4 text-lg uppercase tracking-[0.01em] text-wssu-white transition-colors hover:text-wssu-black md:text-xl"
+            <div
+              className="cta-reveal mt-10 flex flex-wrap gap-3 md:mt-12"
+              style={{ "--cta-delay": "500ms" } as CSSProperties}
             >
-              Apply
-              <CtaArrowIcon />
-            </WipeButton>
-            <DemoLink className="group font-display inline-flex items-center gap-3 border border-wssu-white/90 px-8 py-4 text-lg uppercase tracking-[0.01em] text-wssu-white transition-colors hover:bg-wssu-white hover:text-wssu-red md:text-xl">
-              Visit
-              <CtaArrowIcon />
-            </DemoLink>
+              <WipeButton
+                wipeFill="red"
+                className="group font-display inline-flex items-center gap-3 border border-wssu-black bg-wssu-black px-8 py-4 text-lg uppercase tracking-[0.01em] text-wssu-white transition-colors hover:text-wssu-black md:text-xl"
+              >
+                Apply
+                <CtaArrowIcon />
+              </WipeButton>
+              <DemoLink className="group font-display inline-flex items-center gap-3 border border-wssu-white/90 px-8 py-4 text-lg uppercase tracking-[0.01em] text-wssu-white transition-colors hover:bg-wssu-white hover:text-wssu-red md:text-xl">
+                Visit
+                <CtaArrowIcon />
+              </DemoLink>
+            </div>
           </div>
         </div>
       </div>
