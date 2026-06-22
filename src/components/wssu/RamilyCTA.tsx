@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { cn } from "@/lib/utils";
 import { ctaImage } from "./photos";
+import { OptimizedImage } from "./OptimizedImage";
 import { CtaArrowIcon } from "./CtaArrowIcon";
 import { DemoLink } from "./DemoLink";
 import { WipeButton } from "./WipeButton";
@@ -37,9 +38,10 @@ export function RamilyCTA() {
     >
       <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:min-h-[min(85vh,920px)]">
         <div className="relative min-h-[55vh] overflow-hidden lg:min-h-full">
-          <img
+          <OptimizedImage
             src={ctaImage}
             alt="WSSU students"
+            sizes="(min-width: 1024px) 50vw, 100vw"
             className="cta-photo absolute inset-0 size-full object-cover"
           />
         </div>

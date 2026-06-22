@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { MarkerCircle } from "./MarkerCircle";
+import { OptimizedImage } from "./OptimizedImage";
 import { SectionHeaderGrid } from "./SectionHeaderGrid";
 import { photos, whyImage } from "./photos";
 
@@ -64,7 +65,12 @@ function WhyPhotoMobile({ index }: { index: number }) {
 
   return (
     <div className="photo-corner-cut relative mb-8 aspect-[4/5] w-full overflow-hidden bg-wssu-black/5 lg:hidden">
-      <img src={item.image} alt={item.title} className="size-full object-cover" />
+      <OptimizedImage
+        src={item.image}
+        alt={item.title}
+        sizes="90vw"
+        className="size-full object-cover"
+      />
       <div className="absolute inset-0 ring-1 ring-inset ring-wssu-black/10" />
     </div>
   );
@@ -89,10 +95,11 @@ function WhyPhotoPanel({
 
   return (
     <div className="photo-corner-cut relative w-full max-h-[820px] overflow-hidden bg-wssu-black/5 aspect-[4/5] lg:aspect-auto lg:h-[min(820px,calc(100vh-8rem))]">
-      <img
+      <OptimizedImage
         key={displayed.image}
         src={displayed.image}
         alt={displayed.title}
+        sizes="(min-width: 1024px) 24rem, 90vw"
         className={cn("size-full object-cover", imageReveal && "program-image-reveal")}
       />
       <span

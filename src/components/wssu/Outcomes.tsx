@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import { DemoLink } from "./DemoLink";
 import { HoverAccentLine } from "./HoverAccentLine";
 import { MarkerCircle } from "./MarkerCircle";
+import { OptimizedImage } from "./OptimizedImage";
 import { SectionHeaderGrid } from "./SectionHeaderGrid";
 import { photos } from "./photos";
 
@@ -35,9 +36,11 @@ export function Outcomes() {
   return (
     <section className="relative overflow-hidden bg-wssu-black py-24 text-wssu-white md:py-32">
       <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-        <img
+        <OptimizedImage
           src={photos[6]}
           alt=""
+          aria-hidden="true"
+          sizes="60vw"
           className="absolute -bottom-[18%] -left-[8%] h-[72%] w-[58%] max-w-none object-cover opacity-[0.14] mix-blend-luminosity"
         />
         <div className="absolute inset-0 bg-gradient-to-tr from-wssu-black via-wssu-black/96 to-wssu-black/88" />

@@ -3,6 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { DemoLink } from "./DemoLink";
 import { WipeButton } from "./WipeButton";
+import { OptimizedImage } from "./OptimizedImage";
 import { HoverAccentLine } from "./HoverAccentLine";
 import { SubnavArrow } from "./SubnavArrow";
 import { SectionHeaderGrid } from "./SectionHeaderGrid";
@@ -227,10 +228,11 @@ export function Programs() {
                           isActive ? "ring-2 ring-wssu-white/70" : "ring-1 ring-wssu-black/10",
                         )}
                       >
-                        <img
+          <OptimizedImage
                           src={p.image}
                           alt=""
                           aria-hidden="true"
+                          sizes="4rem"
                           className={cn(
                             "size-full object-cover transition-all duration-500",
                             isActive
@@ -265,10 +267,11 @@ export function Programs() {
 
           <div className="lg:col-span-7">
             <div className="photo-corner-cut relative aspect-[2/1] w-full overflow-hidden bg-wssu-black/5">
-              <img
+              <OptimizedImage
                 key={displayed.id}
                 src={displayed.image}
                 alt={displayed.heading}
+                sizes="(min-width: 1024px) 58vw, 100vw"
                 className={cn(
                   "size-full object-cover",
                   imageReveal && "program-image-reveal",

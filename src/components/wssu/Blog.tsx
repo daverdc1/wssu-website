@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { DemoLink } from "./DemoLink";
+import { OptimizedImage } from "./OptimizedImage";
 import { ConnectedArrowControls } from "./ConnectedArrowControls";
+import { DemoLink } from "./DemoLink";
 import { HoverAccentLine } from "./HoverAccentLine";
 import { SectionHeaderLabelRow } from "./SectionHeaderGrid";
 import { blog } from "./photos";
@@ -127,9 +128,10 @@ function BlogCard({
   return (
     <article className="group flex h-full flex-col">
       <div className="photo-corner-cut relative aspect-[4/3] w-full overflow-hidden bg-wssu-black/5">
-        <img
+        <OptimizedImage
           src={post.image}
           alt={post.title}
+          sizes="(min-width: 1024px) 28rem, 85vw"
           className="size-full object-cover transition-transform duration-700 group-hover:scale-105"
         />
         <div className="absolute left-3 top-3 bg-wssu-white px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.2em] text-wssu-black">

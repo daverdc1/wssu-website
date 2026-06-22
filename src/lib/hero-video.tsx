@@ -11,6 +11,7 @@ import {
 } from "react";
 import { Pause, Play } from "lucide-react";
 import { hero } from "@/components/wssu/photos";
+import { OptimizedImage } from "@/components/wssu/OptimizedImage";
 import { cn } from "@/lib/utils";
 
 const HERO_VIDEO_ID = "g-VSShk-0h8";
@@ -260,12 +261,13 @@ export function HeroVideoLayer() {
           />
         </div>
       ) : (
-        <img
+        <OptimizedImage
           src={hero}
           alt=""
           aria-hidden="true"
+          priority
+          sizes="100vw"
           className="absolute inset-0 size-full object-cover opacity-65"
-          loading="eager"
         />
       )}
 

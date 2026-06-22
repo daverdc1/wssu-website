@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
+import { OptimizedImage } from "./OptimizedImage";
 import { ConnectedArrowControls } from "./ConnectedArrowControls";
 import { SectionIndicators } from "./SectionIndicators";
 import { SectionHeaderLabelRow } from "./SectionHeaderGrid";
@@ -89,10 +90,11 @@ export function Testimonial() {
           <div className="relative lg:col-span-5">
             <div className="photo-corner-cut relative aspect-[4/5] w-full overflow-hidden bg-wssu-black/5">
               {slides.map((slide, idx) => (
-                <img
+                <OptimizedImage
                   key={slide.image}
                   src={slide.image}
                   alt={slide.name}
+                  sizes="(min-width: 1024px) 24rem, 90vw"
                   className={cn(
                     "absolute inset-0 size-full object-cover transition-opacity duration-500 ease-out",
                     idx === i ? "opacity-100" : "opacity-0",
