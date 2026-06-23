@@ -67,18 +67,6 @@ const events: EventItem[] = [
   },
 ];
 
-const eventCategoryStyles: Record<
-  EventCategory,
-  {
-    lineColor: "gold" | "teal" | "lime" | "violet" | "red";
-  }
-> = {
-  Admissions: { lineColor: "gold" },
-  Campus: { lineColor: "teal" },
-  Virtual: { lineColor: "lime" },
-  Athletics: { lineColor: "red" },
-};
-
 function EventDate({ event }: { event: EventItem }) {
   return (
     <div
@@ -243,8 +231,6 @@ export function Events() {
                 </p>
               ) : (
                 visibleEvents.map((event, index) => {
-                  const accent = eventCategoryStyles[event.category];
-
                   return (
                     <article
                       key={event.id}
@@ -274,7 +260,7 @@ export function Events() {
                           {event.description}
                         </p>
 
-                        <DemoLink className="group/link relative inline-flex text-xs font-bold uppercase tracking-[0.15em] text-wssu-black/60 transition-colors group-hover:text-wssu-black hover:text-wssu-black">
+                        <DemoLink className="group/link relative inline-flex text-xs font-bold uppercase tracking-[0.15em] text-wssu-black/60 transition-colors hover:text-wssu-red group-hover:text-wssu-red">
                           <span className="inline-flex items-center gap-2">
                             Save my spot
                             <ArrowRight
@@ -284,7 +270,7 @@ export function Events() {
                           </span>
                           <HoverAccentLine
                             floating
-                            color={accent.lineColor}
+                            color="red"
                             expandOn="group-hover:w-12 group-hover/link:w-12"
                           />
                         </DemoLink>
