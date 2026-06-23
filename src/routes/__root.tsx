@@ -10,7 +10,7 @@ import {
 import type { ReactNode } from "react";
 
 import appCss from "../styles.css?url";
-import antonLatin400 from "@fontsource/anton/files/anton-latin-400-normal.woff2?url";
+import openSansVariableLatinWdth from "@fontsource-variable/open-sans/files/open-sans-latin-wdth-normal.woff2?url";
 import instrumentSansLatin400 from "@fontsource/instrument-sans/files/instrument-sans-latin-400-normal.woff2?url";
 import instrumentSansLatin500 from "@fontsource/instrument-sans/files/instrument-sans-latin-500-normal.woff2?url";
 import instrumentSansLatin600 from "@fontsource/instrument-sans/files/instrument-sans-latin-600-normal.woff2?url";
@@ -97,7 +97,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     links: [
       {
         rel: "preload",
-        href: antonLatin400,
+        href: openSansVariableLatinWdth,
         as: "font",
         type: "font/woff2",
         crossOrigin: "anonymous",

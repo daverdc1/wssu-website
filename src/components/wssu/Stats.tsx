@@ -86,7 +86,9 @@ function StatCard({ value, labelLines, accent, accentColor = "gold" }: Stat) {
   const displayValue =
     hovered && parsed.kind === "count" ? parsed.format(count) : value;
 
+  const accentStyle = accent ? accentText[accentColor] : "text-wssu-white";
   const strokeColor = accent ? accentStroke[accentColor] : "[-webkit-text-stroke:2px_#fafafa]";
+  const fillStyle = hovered ? accentStyle : "text-transparent";
 
   return (
     <div
@@ -96,11 +98,10 @@ function StatCard({ value, labelLines, accent, accentColor = "gold" }: Stat) {
     >
       <span
         className={cn(
-          "inline-block origin-left font-display leading-[0.85] tracking-[-0.02em] text-[clamp(5rem,12vw,11rem)] text-transparent transition-all duration-500 ease-out",
+          "stat-value inline-block origin-left font-display leading-[0.85] text-[clamp(5rem,12vw,11rem)] transition-all duration-500 ease-out [paint-order:stroke_fill]",
           strokeColor,
+          fillStyle,
           hovered && [
-            accentText[accentColor],
-            accentStroke[accentColor],
             parsed.kind === "fixed" ? "scale-[1.08]" : "scale-[1.04]",
             "-translate-y-2",
           ],

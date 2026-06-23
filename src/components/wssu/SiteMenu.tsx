@@ -231,13 +231,13 @@ export function SiteMenu({ open, onClose }: SiteMenuProps) {
                     aria-controls={panelId}
                     onClick={() => setOpenSection(expanded ? null : index)}
                     className={cn(
-                      "group/section flex w-full items-center justify-between gap-4 px-4 py-3 text-left transition-all duration-200 md:px-5",
+                      "group/section flex w-full items-center justify-between gap-4 px-4 py-3.5 text-left transition-all duration-200 md:px-5 md:py-4",
                       !expanded && "hover:pl-5",
                     )}
                   >
                     <span
                       className={cn(
-                        "font-sans text-lg font-bold leading-tight tracking-tight transition-colors md:text-xl",
+                        "translate-y-px font-display text-lg font-bold uppercase leading-none tracking-[-0.02em] transition-colors md:text-xl",
                         expanded
                           ? "text-wssu-red group-hover/section:text-wssu-red-hover"
                           : "text-wssu-black group-hover/section:text-wssu-red",
@@ -247,7 +247,7 @@ export function SiteMenu({ open, onClose }: SiteMenuProps) {
                     </span>
                     <span
                       className={cn(
-                        "flex size-7 shrink-0 items-center justify-center rounded-full border transition-colors duration-200",
+                        "flex size-7 shrink-0 translate-y-px items-center justify-center rounded-full border transition-colors duration-200",
                         expanded
                           ? "border-wssu-red bg-wssu-red text-wssu-white group-hover/section:border-wssu-red-hover group-hover/section:bg-wssu-red-hover"
                           : "border-transparent bg-transparent text-wssu-black group-hover/section:border-wssu-red group-hover/section:bg-wssu-red group-hover/section:text-wssu-white",

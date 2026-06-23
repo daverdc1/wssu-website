@@ -312,7 +312,7 @@ export function WhyWSSU() {
                     <p className="font-mono text-[10px] uppercase tracking-[0.35em] text-wssu-black/50">
                       ({String(index + 1).padStart(2, "0")})
                     </p>
-                    <h3 className="mt-4 font-sans text-xl font-bold leading-tight text-wssu-black md:text-2xl">
+                    <h3 className="mt-4 font-display text-2xl uppercase leading-[1.05] tracking-[-0.02em] text-wssu-black md:text-[1.7rem]">
                       {item.title}
                     </h3>
                     <p className="mt-4 max-w-2xl text-sm leading-relaxed text-wssu-black/75 md:text-base lg:text-lg">

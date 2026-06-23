@@ -156,7 +156,7 @@ function BlogCard({
         </span>
         <span>{post.read}</span>
       </div>
-      <h3 className="mt-4 font-display text-2xl uppercase leading-tight text-wssu-black">
+      <h3 className="display-light mt-4 font-display text-2xl uppercase leading-tight tracking-[-0.02em] text-wssu-black">
         <DemoLink className="block cursor-pointer text-left underline-offset-2 decoration-wssu-black transition-[text-decoration-color] duration-300 group-hover:underline">
           {post.title}
         </DemoLink>
@@ -304,7 +304,7 @@ export function Blog() {
           <SectionHeaderLabelRow label="(07) — News" />
           <h2 className="font-display flex flex-col gap-y-[0.04em] text-5xl uppercase leading-[0.95] md:col-span-5 md:text-7xl">
             <span className="text-wssu-black">Ramily</span>
-            <span className="text-wssu-black">News.</span>
+            <span className="text-wssu-red">News.</span>
           </h2>
           <div className="section-intro-grid section-intro-grid--full hidden w-full flex-col justify-end md:flex">
             <div className="flex w-full flex-wrap items-center justify-end gap-3">

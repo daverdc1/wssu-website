@@ -155,7 +155,7 @@ export function Testimonial() {
                               (direction === 1 ? "testimonial-content-next" : "testimonial-content-prev"),
                           )}
                         >
-                          <p className="font-display text-xl uppercase">{slide.name}</p>
+                          <p className="font-display text-xl uppercase tracking-[-0.02em]">{slide.name}</p>
                           <p className="mt-1 text-xs font-semibold uppercase tracking-[0.2em] text-wssu-black/60">
                             {slide.role}
                           </p>

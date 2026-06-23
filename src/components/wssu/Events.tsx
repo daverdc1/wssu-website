@@ -79,7 +79,7 @@ function EventDate({ event }: { event: EventItem }) {
         {event.month}
       </p>
       <div className="flex flex-1 items-center justify-center pb-1 md:pb-1.5">
-        <p className="font-display text-2xl leading-none tracking-[-0.02em] md:text-[1.75rem]">
+        <p className="font-display text-2xl leading-none md:text-[1.75rem]">
           {event.day}
         </p>
       </div>
@@ -171,7 +171,7 @@ export function Events() {
           <div className="lg:col-span-4 lg:sticky lg:top-28 lg:self-start">
             <h2 className="font-display flex flex-col gap-y-[0.04em] text-5xl uppercase leading-[0.95] md:text-7xl">
               <span className="text-wssu-black">Upcoming</span>
-              <span className="text-wssu-black">Events.</span>
+              <span className="text-wssu-red">Events.</span>
             </h2>
 
             <nav aria-label="Event categories" className="mt-10">
@@ -243,7 +243,7 @@ export function Events() {
 
                       <div className="min-w-0 flex-1 space-y-3">
                         <div className="space-y-2">
-                          <h3 className="font-display text-2xl uppercase leading-tight text-wssu-black">
+                          <h3 className="display-light font-display text-2xl uppercase leading-tight tracking-[-0.02em] text-wssu-black">
                             <DemoLink className="block cursor-pointer text-left underline-offset-2 decoration-wssu-black transition-[text-decoration-color] duration-300 group-hover:underline">
                               {event.title}
                             </DemoLink>

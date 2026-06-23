@@ -93,7 +93,7 @@ export function Outcomes() {
               >
                 ({it.n})
               </span>
-              <h3 className="mt-6 font-display text-2xl uppercase leading-[1.05] md:text-[1.7rem]">
+              <h3 className="mt-6 font-display text-2xl uppercase leading-[1.05] tracking-[-0.02em] md:text-[1.7rem]">
                 {it.titleLines.map((line) => (
                   <span key={line} className="block">
                     {line}

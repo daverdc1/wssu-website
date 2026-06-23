@@ -17,6 +17,7 @@ type Program = {
   body: string;
   image: string;
   accent: ProgramAccent;
+  ctaLabel?: string;
 };
 
 const programAccentStyles: Record<
@@ -105,6 +106,7 @@ const PROGRAMS: Program[] = [
     body: "Ask better questions—and build what's next. WSSU's STEM programs connect rigorous science and research with technology, engineering design, data, and mathematics—preparing you for graduate study, healthcare pathways, and the industries reshaping North Carolina, from advanced manufacturing and cybersecurity to software, analytics, and infrastructure.",
     image: programs.stem,
     accent: "lime",
+    ctaLabel: "STEM",
   },
 ];
 
@@ -225,7 +227,7 @@ export function Programs() {
                       onClick={() => selectProgram(i)}
                       aria-current={isActive ? "true" : undefined}
                       className={cn(
-                        "group flex w-full items-center gap-4 px-4 py-3 text-left transition-colors duration-300 md:gap-5 md:px-5 md:py-4",
+                        "group flex w-full items-center gap-3.5 px-4 py-3 text-left transition-colors duration-300 md:gap-4 md:px-5 md:py-3.5",
                         isActive
                           ? accent.activeText
                           : "text-wssu-black/80 hover:bg-wssu-white/45 hover:text-wssu-black",
@@ -233,7 +235,7 @@ export function Programs() {
                     >
                       <div
                         className={cn(
-                          "relative h-14 w-14 shrink-0 overflow-hidden bg-wssu-black/5 md:h-16 md:w-16",
+                          "relative h-12 w-12 shrink-0 overflow-hidden bg-wssu-black/5 md:h-14 md:w-14",
                           isActive ? "ring-2 ring-wssu-white/70" : "ring-1 ring-wssu-black/10",
                         )}
                       >
@@ -241,7 +243,7 @@ export function Programs() {
                           src={p.image}
                           alt=""
                           aria-hidden="true"
-                          sizes="4rem"
+                          sizes="3.5rem"
                           className={cn(
                             "size-full object-cover transition-all duration-500",
                             isActive
@@ -337,7 +339,7 @@ export function Programs() {
                   wipeFill="red"
                   className="inline-flex w-full items-center justify-center bg-wssu-black px-6 py-3.5 text-xs font-bold uppercase tracking-[0.15em] text-wssu-white sm:w-auto sm:justify-start sm:text-left [&_.btn-wipe__content]:w-full [&_.btn-wipe__content]:justify-center sm:[&_.btn-wipe__content]:justify-start"
                 >
-                  Explore {active.title.split(",")[0].split(" and ")[0]} Programs
+                  Explore {active.ctaLabel ?? active.title.split(",")[0].split(" and ")[0]} Programs
                 </WipeButton>
                 <DemoLink className="inline-flex w-full items-center justify-center gap-2 border border-wssu-black px-6 py-3.5 text-xs font-bold uppercase tracking-[0.15em] text-wssu-black transition-colors hover:bg-wssu-black hover:text-wssu-white sm:w-auto">
                   All majors

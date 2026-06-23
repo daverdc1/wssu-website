@@ -7,7 +7,10 @@ import { DemoLink } from "./DemoLink";
 import { ctaButtonLift } from "./navButtonStyles";
 import { WipeButton } from "./WipeButton";
 
-const headlineLines = ["Ready to", "join the", "Ramily?"];
+const headlineLines = [
+  { text: "Ready to join the", tone: "light" as const, delay: 80 },
+  { text: "Ramily?", tone: "bold" as const, delay: 220 },
+];
 
 export function RamilyCTA() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -50,14 +53,20 @@ export function RamilyCTA() {
 
         <div className="@container -mt-px flex min-h-[55vh] min-w-0 flex-col justify-center bg-wssu-red px-8 py-14 text-wssu-black md:px-12 md:py-20 lg:mt-0 lg:min-h-full lg:px-14 lg:py-24">
           <div className="min-w-0">
-            <h2 className="font-display flex w-full max-w-full flex-col gap-y-[0.02em] text-[clamp(3.25rem,24cqw,9rem)] uppercase leading-[0.9] tracking-[-0.03em]">
-              {headlineLines.map((line, index) => (
+            <h2 className="font-display flex w-full max-w-full flex-col uppercase tracking-[-0.04em]">
+              {headlineLines.map((line) => (
                 <span
-                  key={line}
-                  className="cta-reveal block w-full"
-                  style={{ "--cta-delay": `${80 + index * 70}ms` } as CSSProperties}
+                  key={line.text}
+                  className={cn(
+                    "cta-reveal block w-full",
+                    line.tone === "light" &&
+                      "cta-headline-light whitespace-nowrap text-5xl leading-[0.95] tracking-[-0.04em] md:text-7xl",
+                    line.tone === "bold" &&
+                      "cta-headline-bold cta-ramily-headline font-extrabold -mt-1 w-full max-w-full md:-mt-0.5",
+                  )}
+                  style={{ "--cta-delay": `${line.delay}ms` } as CSSProperties}
                 >
-                  {line}
+                  {line.text}
                 </span>
               ))}
             </h2>
@@ -75,14 +84,14 @@ export function RamilyCTA() {
               <WipeButton
                 lift
                 wipeFill="red"
-                className="group font-display inline-flex items-center gap-3 border border-wssu-black bg-wssu-black px-8 py-4 text-lg uppercase tracking-[0.01em] text-wssu-white transition-colors hover:text-wssu-black md:text-xl"
+                className="group font-display inline-flex items-center gap-3 border border-wssu-black bg-wssu-black px-8 py-4 text-lg uppercase tracking-[0.02em] text-wssu-white transition-colors hover:text-wssu-black md:text-xl"
               >
                 Apply
                 <CtaArrowIcon />
               </WipeButton>
               <DemoLink
                 className={cn(
-                  "group font-display inline-flex items-center gap-3 border border-wssu-white/90 px-8 py-4 text-lg uppercase tracking-[0.01em] text-wssu-white transition-colors hover:bg-wssu-white hover:text-wssu-red md:text-xl",
+                  "group font-display inline-flex items-center gap-3 border border-wssu-white/90 px-8 py-4 text-lg uppercase tracking-[0.02em] text-wssu-white transition-colors hover:bg-wssu-white hover:text-wssu-red md:text-xl",
                   ctaButtonLift,
                 )}
               >

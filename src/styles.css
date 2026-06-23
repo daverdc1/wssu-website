@@ -1,7 +1,9 @@
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
-@import "@fontsource/anton/400.css";
+@import "@fontsource/merriweather/400.css";
+@import "@fontsource/merriweather/400-italic.css";
+@import "@fontsource-variable/open-sans/wdth.css";
 @import "@fontsource/instrument-sans/400.css";
 @import "@fontsource/instrument-sans/400-italic.css";
 @import "@fontsource/instrument-sans/600-italic.css";
@@ -49,8 +51,10 @@
   --color-wssu-paper: var(--wssu-paper);
   --color-wssu-cream-ink: var(--wssu-cream-ink);
 
-  --font-display: "Anton", sans-serif;
+  --font-display: "Open Sans Variable", sans-serif;
+  --font-display-stretch: 75%;
   --font-sans: "Instrument Sans", sans-serif;
+  --font-serif: "Merriweather", Georgia, serif;
   --font-marker: "Permanent Marker", cursive;
 }
 
@@ -111,11 +115,19 @@
 }
 
 @font-face {
-  font-family: "Anton";
+  font-family: "Merriweather";
   font-style: normal;
   font-weight: 400;
   font-display: block;
-  src: url("@fontsource/anton/files/anton-latin-400-normal.woff2") format("woff2");
+  src: url("@fontsource/merriweather/files/merriweather-latin-400-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Merriweather";
+  font-style: italic;
+  font-weight: 400;
+  font-display: block;
+  src: url("@fontsource/merriweather/files/merriweather-latin-400-italic.woff2") format("woff2");
 }
 
 @font-face {
@@ -166,6 +178,15 @@
     letter-spacing: -0.015em;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+  }
+
+  .font-display {
+    font-stretch: var(--font-display-stretch);
+    font-weight: 700;
+    font-synthesis: none;
+    letter-spacing: -0.05em;
+    -webkit-text-stroke: 0;
+    paint-order: normal;
   }
 }
 
@@ -315,7 +336,7 @@
   top: 0;
   bottom: 0;
   width: 0;
-  border-left: 1px dashed var(--wssu-red);
+  border-left: 2px solid var(--wssu-red);
 }
 
 .hero-intro {
@@ -324,7 +345,29 @@
 }
 
 #hero h1 {
+  letter-spacing: -0.04em;
+}
+
+#hero h1 .cta-headline-light,
+#hero h1 .cta-headline-light span {
+  font-weight: 500;
+  font-synthesis: none;
+}
+
+#hero h1 .cta-headline-bold {
+  font-weight: 800;
+  font-synthesis: none;
+  letter-spacing: -0.04em;
+  -webkit-text-stroke: 0;
+  paint-order: normal;
   text-shadow: 0 2px 28px rgba(9, 9, 11, 0.55), 0 1px 4px rgba(9, 9, 11, 0.4);
+}
+
+.stat-value.font-display {
+  font-stretch: var(--font-display-stretch);
+  font-weight: 800;
+  font-synthesis: none;
+  paint-order: stroke fill;
 }
 
 .section-label-marker {
@@ -477,6 +520,41 @@
   animation-delay: var(--cta-delay, 0ms);
 }
 
+#apply h2 .cta-headline-light,
+#apply h2 .cta-headline-light span {
+  font-weight: 600;
+  font-synthesis: none;
+  letter-spacing: -0.04em;
+}
+
+#apply h2 .cta-headline-bold {
+  font-weight: 800;
+  font-synthesis: none;
+  letter-spacing: -0.06em;
+}
+
+#apply h2 .cta-ramily-headline {
+  font-size: clamp(2rem, calc((100cqw - 0.5rem) / 3.45), 12rem);
+  line-height: 0.85;
+}
+
+.display-light,
+.cta-headline-light,
+.cta-headline-light span {
+  font-weight: 650;
+  font-synthesis: none;
+  -webkit-text-stroke: 0;
+  paint-order: normal;
+}
+
+.cta-headline-bold {
+  font-weight: 800;
+  font-synthesis: none;
+  letter-spacing: -0.02em;
+  -webkit-text-stroke: 0;
+  paint-order: normal;
+}
+
 .cta-photo {
   opacity: 0;
 }
@@ -558,30 +636,36 @@
 .testimonial-quote__open {
   display: block;
   font-family: var(--font-display);
+  font-stretch: var(--font-display-stretch);
+  font-weight: 700;
+  font-synthesis: none;
   font-size: clamp(4rem, 9vw, 6.5rem);
   line-height: 0.65;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.06em;
   user-select: none;
 }
 
 .testimonial-quote__close {
   flex-shrink: 0;
   font-family: var(--font-display);
+  font-stretch: var(--font-display-stretch);
+  font-weight: 700;
+  font-synthesis: none;
   font-size: clamp(4rem, 9vw, 6.5rem);
   line-height: 0.65;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.06em;
   user-select: none;
 }
 
 .testimonial-quote__text {
   margin-top: -0.35em;
   max-width: none;
-  font-family: var(--font-sans);
+  font-family: var(--font-serif);
   font-size: 1.25rem;
   font-style: italic;
   font-weight: 400;
   line-height: 1.6;
-  letter-spacing: -0.01em;
+  letter-spacing: 0;
   color: var(--wssu-black);
 }
 

@@ -64,15 +64,14 @@ export function Hero() {
           <div className="min-h-6 flex-1 shrink md:min-h-8" aria-hidden="true" />
 
           <div className="w-full shrink-0 pb-5 pl-5 pr-3 sm:pl-6 sm:pr-4 md:pb-6 md:pl-10 md:pr-5 lg:pl-12">
-            <h1 className="font-display flex flex-col uppercase text-wssu-white">
-              <span className="text-[clamp(2.75rem,8.5vw,7.75rem)] leading-[0.9] tracking-[-0.025em]">
-                <span className="block">Future Focused</span>
-                <span className="block">Programs.</span>
+            <h1 className="font-display flex flex-col uppercase tracking-[-0.04em] text-wssu-white">
+              <span className="cta-headline-light mb-2 text-5xl leading-[0.95] tracking-[-0.04em] md:mb-3 md:text-7xl">
+                Future Focused Programs.
               </span>
-              <span className="mt-4 text-[clamp(2.75rem,8.5vw,7.75rem)] leading-[0.9] tracking-[-0.025em] md:mt-6">
+              <span className="cta-headline-bold font-extrabold mt-0 text-[clamp(3.25rem,10.5vw,9.5rem)] leading-[0.85] md:mt-1">
                 Real-World
               </span>
-              <span className="relative inline-block w-fit text-[clamp(2.75rem,8.5vw,7.75rem)] leading-[0.9] tracking-[-0.025em]">
+              <span className="cta-headline-bold font-extrabold relative inline-block w-fit text-[clamp(3.25rem,10.5vw,9.5rem)] leading-[0.9]">
                 Results.
                 <MarkerCircle rotate={-3} size="hero" strokeWidth={4} />
               </span>
@@ -82,12 +81,12 @@ export function Hero() {
               <WipeButton
                 lift
                 wipeFill="black"
-                className="group font-display inline-flex items-center gap-3 border border-transparent bg-wssu-red px-8 py-4 text-lg uppercase tracking-[0.01em] text-wssu-white shadow-[0_8px_28px_rgba(0,0,0,0.35)] md:text-xl"
+                className="group font-display inline-flex items-center gap-3 border border-transparent bg-wssu-red px-8 py-4 text-lg uppercase tracking-[0.02em] text-wssu-white shadow-[0_8px_28px_rgba(0,0,0,0.35)] md:text-xl"
               >
                 Apply
                 <CtaArrowIcon />
               </WipeButton>
-              <DemoLink className={cn("group font-display inline-flex items-center gap-3 border border-wssu-white/80 bg-wssu-black/35 px-8 py-4 text-lg uppercase tracking-[0.01em] text-wssu-white shadow-[0_8px_28px_rgba(0,0,0,0.25)] backdrop-blur-sm transition-colors hover:bg-wssu-white hover:text-wssu-black md:text-xl", ctaButtonLift)}>
+              <DemoLink className={cn("group font-display inline-flex items-center gap-3 border border-wssu-white/80 bg-wssu-black/35 px-8 py-4 text-lg uppercase tracking-[0.02em] text-wssu-white shadow-[0_8px_28px_rgba(0,0,0,0.25)] backdrop-blur-sm transition-colors hover:bg-wssu-white hover:text-wssu-black md:text-xl", ctaButtonLift)}>
                 Explore Programs
                 <CtaArrowIcon />
               </DemoLink>
