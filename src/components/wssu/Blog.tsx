@@ -13,10 +13,10 @@ const categories = [
   { name: "Academics", fill: "bg-wssu-gold", hoverText: "group-hover:text-wssu-black" },
   { name: "Arts", fill: "bg-wssu-teal", hoverText: "group-hover:text-wssu-white" },
   { name: "Community", fill: "bg-wssu-lime", hoverText: "group-hover:text-wssu-black" },
-  { name: "Health", fill: "bg-wssu-coral", hoverText: "group-hover:text-wssu-white" },
-  { name: "People", fill: "bg-wssu-violet", hoverText: "group-hover:text-wssu-white" },
-  { name: "Research", fill: "bg-wssu-blue", hoverText: "group-hover:text-wssu-white" },
-  { name: "Sports", fill: "bg-wssu-red", hoverText: "group-hover:text-wssu-white" },
+  { name: "Health", fill: "bg-wssu-red", hoverText: "group-hover:text-wssu-white" },
+  { name: "People", fill: "bg-wssu-gold", hoverText: "group-hover:text-wssu-black" },
+  { name: "Research", fill: "bg-wssu-teal", hoverText: "group-hover:text-wssu-white" },
+  { name: "Sports", fill: "bg-wssu-lime", hoverText: "group-hover:text-wssu-black" },
 ] as const;
 
 type CategoryName = (typeof categories)[number]["name"];
@@ -25,17 +25,14 @@ const categoryStyles = Object.fromEntries(
   categories.map((c) => [c.name, { fill: c.fill, hoverText: c.hoverText }]),
 ) as Record<CategoryName, { fill: (typeof categories)[number]["fill"]; hoverText: (typeof categories)[number]["hoverText"] }>;
 
-const categoryLineColors: Record<
-  CategoryName,
-  "gold" | "teal" | "lime" | "coral" | "violet" | "blue" | "red"
-> = {
+const categoryLineColors: Record<CategoryName, "gold" | "teal" | "lime" | "red"> = {
   Academics: "gold",
   Arts: "teal",
   Community: "lime",
-  Health: "coral",
-  People: "violet",
-  Research: "blue",
-  Sports: "red",
+  Health: "red",
+  People: "gold",
+  Research: "teal",
+  Sports: "lime",
 };
 
 const posts: {

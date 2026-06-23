@@ -39,6 +39,8 @@ export const programs = {
   comms: photoPath("program-comms"),
   education: photoPath("program-education"),
   justice: photoPath("program-justice"),
+  health: photoPath("program-health"),
+  stem: photoPath("program-stem"),
 } as const satisfies Record<string, PhotoPath>;
 
 export const testimonialSlides = [

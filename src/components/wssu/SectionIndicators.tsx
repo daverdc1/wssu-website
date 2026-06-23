@@ -30,9 +30,6 @@ const blogAccents: readonly IndicatorAccent[] = [
   { active: "bg-wssu-gold", hover: "hover:bg-wssu-gold/55" },
   { active: "bg-wssu-teal", hover: "hover:bg-wssu-teal/55" },
   { active: "bg-wssu-lime", hover: "hover:bg-wssu-lime/55" },
-  { active: "bg-wssu-coral", hover: "hover:bg-wssu-coral/55" },
-  { active: "bg-wssu-violet", hover: "hover:bg-wssu-violet/55" },
-  { active: "bg-wssu-blue", hover: "hover:bg-wssu-blue/55" },
   { active: "bg-wssu-red", hover: "hover:bg-wssu-red/55" },
 ];
 

@@ -42,8 +42,9 @@ export function RamilyCTA() {
           <OptimizedImage
             src={ctaImage}
             alt="WSSU students"
+            priority
             sizes="(min-width: 1024px) 50vw, 100vw"
-            className="cta-photo absolute inset-0 block size-full object-cover object-top"
+            className="cta-photo absolute inset-0 block size-full object-cover object-center"
           />
         </div>
 
