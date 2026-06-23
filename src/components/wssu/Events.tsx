@@ -70,42 +70,20 @@ const events: EventItem[] = [
 const eventCategoryStyles: Record<
   EventCategory,
   {
-    dateBg: string;
-    dateText: string;
     lineColor: "gold" | "teal" | "lime" | "violet" | "red";
   }
 > = {
-  Admissions: {
-    dateBg: "bg-wssu-gold",
-    dateText: "text-wssu-black",
-    lineColor: "gold",
-  },
-  Campus: {
-    dateBg: "bg-wssu-teal",
-    dateText: "text-wssu-white",
-    lineColor: "teal",
-  },
-  Virtual: {
-    dateBg: "bg-wssu-lime",
-    dateText: "text-wssu-black",
-    lineColor: "lime",
-  },
-  Athletics: {
-    dateBg: "bg-wssu-red",
-    dateText: "text-wssu-white",
-    lineColor: "red",
-  },
+  Admissions: { lineColor: "gold" },
+  Campus: { lineColor: "teal" },
+  Virtual: { lineColor: "lime" },
+  Athletics: { lineColor: "red" },
 };
 
 function EventDate({ event }: { event: EventItem }) {
-  const styles = eventCategoryStyles[event.category];
-
   return (
     <div
       className={cn(
-        "photo-corner-cut relative flex size-[3.75rem] shrink-0 flex-col transition-colors duration-300 [--photo-cut:0.9rem] md:size-[4.25rem] md:[--photo-cut:1rem]",
-        styles.dateBg,
-        styles.dateText,
+        "photo-corner-cut relative flex size-[3.75rem] shrink-0 flex-col bg-wssu-red text-wssu-white transition-colors duration-300 [--photo-cut:0.9rem] md:size-[4.25rem] md:[--photo-cut:1rem]",
         "group-hover:brightness-95",
       )}
     >
