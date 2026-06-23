@@ -60,35 +60,58 @@ export function Nav() {
 
   return (
     <>
-      <div className="sticky top-0 z-50 h-20 md:h-[5.5rem]">
-        <div className="section-header-container h-full">
-          <div
-            className={cn(
-              "h-full transition-[padding] duration-300 ease-out",
-              scrolled ? "px-0 pt-3 md:pt-4" : "px-0 pt-0",
-            )}
-          >
-            <nav
-              className={cn(
-                "flex w-full items-center justify-between overflow-visible transition-[height,border-radius,background-color,box-shadow,padding-left,padding-right,backdrop-filter] duration-300 ease-out",
-                scrolled
-                  ? "h-16 rounded-xl border border-wssu-black/15 bg-wssu-white px-5 shadow-[0_0_0_1px_rgba(9,9,11,0.06),0_16px_48px_-14px_rgba(9,9,11,0.42)] md:px-8"
-                  : "h-full border-b border-wssu-black/10 bg-wssu-white/95 shadow-[0_1px_0_rgba(9,9,11,0.05)] backdrop-blur-md",
-              )}
-            >
+      <div className="sticky top-0 z-50 h-20 md:h-[5.5rem]" data-site-nav>
+        <div
+          className={cn(
+            "h-full",
+            !scrolled &&
+              "border-b border-wssu-black/10 bg-wssu-white/95 shadow-[0_1px_0_rgba(9,9,11,0.05)] backdrop-blur-md",
+          )}
+        >
+          <div className="section-header-container h-full">
+            <div className={cn("h-full", scrolled ? "px-0 pt-3 md:pt-4" : "px-0 pt-0")}>
+              <nav
+                className={cn(
+                  "flex items-center justify-between overflow-visible",
+                  scrolled
+                    ? "h-16 w-[calc(100%+1.25rem)] -mx-2.5 rounded-xl border border-wssu-black/15 bg-wssu-white px-5 shadow-[0_0_0_1px_rgba(9,9,11,0.06),0_16px_48px_-14px_rgba(9,9,11,0.42)] md:w-[calc(100%+2rem)] md:-mx-4 md:px-8"
+                    : "w-full h-full",
+                )}
+              >
             <a
               href="/"
               onClick={scrollToTop}
-              className="flex shrink-0 items-center"
+              className="relative flex shrink-0 items-center"
               aria-label="Winston-Salem State University home"
             >
-              <Logo
-                tone={scrolled ? "sticky" : "default"}
+              <span
                 className={cn(
-                  "w-auto transition-[height] duration-300 ease-out",
+                  "relative inline-block",
                   scrolled ? "h-9 md:h-10" : "h-12 md:h-14",
                 )}
-              />
+              >
+                <Logo
+                  tone={scrolled ? "sticky" : "default"}
+                  aria-hidden
+                  className="invisible h-full w-auto"
+                />
+                <Logo
+                  tone="default"
+                  aria-hidden={scrolled}
+                  className={cn(
+                    "absolute left-0 top-0 h-full w-auto transition-opacity duration-150",
+                    scrolled ? "pointer-events-none opacity-0" : "opacity-100",
+                  )}
+                />
+                <Logo
+                  tone="sticky"
+                  aria-hidden={!scrolled}
+                  className={cn(
+                    "absolute left-0 top-0 h-full w-auto transition-opacity duration-150",
+                    scrolled ? "opacity-100" : "pointer-events-none opacity-0",
+                  )}
+                />
+              </span>
             </a>
 
             <div className="flex shrink-0 items-center gap-2 sm:gap-3">
@@ -111,6 +134,7 @@ export function Nav() {
                 type="button"
                 onClick={() => setMenuOpen(true)}
                 wipeFill="red"
+                lift={false}
                 className={cn(
                   "group",
                   navActionButtonTypography,
@@ -122,6 +146,7 @@ export function Nav() {
               </WipeButton>
             </div>
             </nav>
+            </div>
           </div>
         </div>
       </div>

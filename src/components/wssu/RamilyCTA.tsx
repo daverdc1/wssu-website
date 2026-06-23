@@ -4,6 +4,7 @@ import { ctaImage } from "./photos";
 import { OptimizedImage } from "./OptimizedImage";
 import { CtaArrowIcon } from "./CtaArrowIcon";
 import { DemoLink } from "./DemoLink";
+import { ctaButtonLift } from "./navButtonStyles";
 import { WipeButton } from "./WipeButton";
 
 const headlineLines = ["Ready to", "join the", "Ramily?"];
@@ -36,17 +37,17 @@ export function RamilyCTA() {
       id="apply"
       className={cn("cta-split overflow-hidden", inView && "cta-in-view")}
     >
-      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:min-h-[min(85vh,920px)]">
+      <div className="grid grid-cols-1 gap-0 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:min-h-[min(85vh,920px)]">
         <div className="relative min-h-[55vh] overflow-hidden lg:min-h-full">
           <OptimizedImage
             src={ctaImage}
             alt="WSSU students"
             sizes="(min-width: 1024px) 50vw, 100vw"
-            className="cta-photo absolute inset-0 size-full object-cover"
+            className="cta-photo absolute inset-0 block size-full object-cover object-top"
           />
         </div>
 
-        <div className="@container flex min-h-[55vh] min-w-0 flex-col justify-center bg-wssu-red px-8 py-14 text-wssu-black md:px-12 md:py-20 lg:min-h-full lg:px-14 lg:py-24">
+        <div className="@container -mt-px flex min-h-[55vh] min-w-0 flex-col justify-center bg-wssu-red px-8 py-14 text-wssu-black md:px-12 md:py-20 lg:mt-0 lg:min-h-full lg:px-14 lg:py-24">
           <div className="min-w-0">
             <h2 className="font-display flex w-full max-w-full flex-col gap-y-[0.02em] text-[clamp(3.25rem,24cqw,9rem)] uppercase leading-[0.9] tracking-[-0.03em]">
               {headlineLines.map((line, index) => (
@@ -71,13 +72,19 @@ export function RamilyCTA() {
               style={{ "--cta-delay": "500ms" } as CSSProperties}
             >
               <WipeButton
+                lift
                 wipeFill="red"
                 className="group font-display inline-flex items-center gap-3 border border-wssu-black bg-wssu-black px-8 py-4 text-lg uppercase tracking-[0.01em] text-wssu-white transition-colors hover:text-wssu-black md:text-xl"
               >
                 Apply
                 <CtaArrowIcon />
               </WipeButton>
-              <DemoLink className="group font-display inline-flex items-center gap-3 border border-wssu-white/90 px-8 py-4 text-lg uppercase tracking-[0.01em] text-wssu-white transition-colors hover:bg-wssu-white hover:text-wssu-red md:text-xl">
+              <DemoLink
+                className={cn(
+                  "group font-display inline-flex items-center gap-3 border border-wssu-white/90 px-8 py-4 text-lg uppercase tracking-[0.01em] text-wssu-white transition-colors hover:bg-wssu-white hover:text-wssu-red md:text-xl",
+                  ctaButtonLift,
+                )}
+              >
                 Visit
                 <CtaArrowIcon />
               </DemoLink>

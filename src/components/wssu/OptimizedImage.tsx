@@ -1,6 +1,7 @@
 import type { ImgHTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
-import { PHOTO_WIDTHS, photoSrc, type PhotoPath } from "./photos";
+import photoManifest from "@/lib/photo-manifest.json";
+import { PHOTO_WIDTHS, photoLargestSrc, photoSrc, type PhotoPath } from "./photos";
 
 type OptimizedImageProps = Omit<ImgHTMLAttributes<HTMLImageElement>, "src" | "srcSet"> & {
   src: PhotoPath | string;
@@ -8,8 +9,20 @@ type OptimizedImageProps = Omit<ImgHTMLAttributes<HTMLImageElement>, "src" | "sr
   sizes?: string;
 };
 
+function slugFromBase(base: string) {
+  return base.replace(/^\/photos\//, "");
+}
+
+function widthsForPhoto(base: string) {
+  const slug = slugFromBase(base);
+  const widths = photoManifest[slug as keyof typeof photoManifest];
+  return widths?.length ? widths : [...PHOTO_WIDTHS];
+}
+
 function buildSrcSet(base: string, ext: "webp" | "jpg") {
-  return PHOTO_WIDTHS.map((width) => `${photoSrc(base, width, ext)} ${width}w`).join(", ");
+  return widthsForPhoto(base)
+    .map((width) => `${photoSrc(base, width, ext)} ${width}w`)
+    .join(", ");
 }
 
 export function OptimizedImage({
@@ -18,14 +31,18 @@ export function OptimizedImage({
   priority = false,
   sizes = "100vw",
   className,
+  draggable = false,
+  onDragStart,
   ...props
 }: OptimizedImageProps) {
-  const fallback = photoSrc(src, PHOTO_WIDTHS[PHOTO_WIDTHS.length - 1], "jpg");
+  const widths = widthsForPhoto(src);
+  const fallback = photoLargestSrc(src, widths);
 
   return (
     <picture className="contents">
       <source type="image/webp" srcSet={buildSrcSet(src, "webp")} sizes={sizes} />
       <img
+        {...props}
         src={fallback}
         srcSet={buildSrcSet(src, "jpg")}
         sizes={sizes}
@@ -33,8 +50,12 @@ export function OptimizedImage({
         loading={priority ? "eager" : "lazy"}
         decoding="async"
         fetchPriority={priority ? "high" : undefined}
-        className={cn(className)}
-        {...props}
+        draggable={draggable}
+        onDragStart={(event) => {
+          event.preventDefault();
+          onDragStart?.(event);
+        }}
+        className={cn("select-none [-webkit-user-drag:none]", className)}
       />
     </picture>
   );

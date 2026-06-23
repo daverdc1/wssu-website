@@ -62,7 +62,13 @@ export function Outcomes() {
                   <MarkerCircle
                     rotate={-4}
                     color="var(--wssu-gold)"
-                    className="-left-16 -top-8 -right-3 w-[calc(100%+7rem)]"
+                    size="sm"
+                    className="-left-7 -top-5 w-[calc(100%+3rem)] md:hidden"
+                  />
+                  <MarkerCircle
+                    rotate={-4}
+                    color="var(--wssu-gold)"
+                    className="-left-16 -top-8 -right-3 hidden w-[calc(100%+7rem)] md:block"
                   />
                 </span>
               </span>
@@ -99,7 +105,7 @@ export function Outcomes() {
               </p>
               <DemoLink
                 className={cn(
-                  "group mt-8 inline-flex flex-col items-start text-xs font-bold uppercase tracking-[0.15em] text-wssu-white transition-colors",
+                  "group relative mt-8 inline-flex text-xs font-bold uppercase tracking-[0.15em] text-wssu-white transition-colors",
                   accentHovers[idx],
                 )}
               >
@@ -107,7 +113,7 @@ export function Outcomes() {
                   {it.cta}
                   <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" strokeWidth={2.5} />
                 </span>
-                <HoverAccentLine color={accentLineColors[idx]} />
+                <HoverAccentLine floating color={accentLineColors[idx]} />
               </DemoLink>
             </div>
           ))}

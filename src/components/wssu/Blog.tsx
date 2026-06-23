@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useHorizontalDragScroll } from "@/hooks/use-horizontal-drag-scroll";
 import { OptimizedImage } from "./OptimizedImage";
 import { ConnectedArrowControls } from "./ConnectedArrowControls";
 import { DemoLink } from "./DemoLink";
@@ -131,7 +132,7 @@ function BlogCard({
         <OptimizedImage
           src={post.image}
           alt={post.title}
-          sizes="(min-width: 1024px) 28rem, 85vw"
+          sizes="(min-width: 768px) 1024px, 100vw"
           className="size-full object-cover transition-transform duration-700 group-hover:scale-105"
         />
         <div className="absolute left-3 top-3 bg-wssu-white px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.2em] text-wssu-black">
@@ -164,12 +165,13 @@ function BlogCard({
         </DemoLink>
       </h3>
       <p className="mt-3 text-sm leading-relaxed text-wssu-black/75">{post.excerpt}</p>
-      <DemoLink className="group/link mt-6 inline-flex flex-col items-start text-xs font-bold uppercase tracking-[0.15em] text-wssu-black/60 transition-colors group-hover:text-wssu-black hover:text-wssu-black">
+      <DemoLink className="group/link relative mt-6 inline-flex text-xs font-bold uppercase tracking-[0.15em] text-wssu-black/60 transition-colors group-hover:text-wssu-black hover:text-wssu-black">
         <span className="inline-flex items-center gap-2">
           Read more
           <ArrowRight className="size-4 transition-transform group-hover:translate-x-1 group-hover/link:translate-x-1" strokeWidth={2.5} />
         </span>
         <HoverAccentLine
+          floating
           color={categoryLineColors[post.category]}
           expandOn="group-hover:w-12 group-hover/link:w-12"
         />
@@ -179,7 +181,7 @@ function BlogCard({
 }
 
 const newsCardWidth =
-  "w-[min(88vw,22rem)] sm:w-[min(75vw,24rem)] md:w-[min(47vw,26rem)] lg:w-[min(31vw,22rem)]";
+  "w-[min(82vw,20rem)] sm:w-[min(75vw,24rem)] md:w-[min(47vw,26rem)] lg:w-[min(31vw,22rem)]";
 
 function getScrollPaddingStart(container: HTMLElement) {
   const style = getComputedStyle(container);
@@ -190,6 +192,7 @@ function getScrollPaddingStart(container: HTMLElement) {
 export function Blog() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const scrollingRef = useRef(false);
+  const prefersReducedMotionRef = useRef(false);
   const [current, setCurrent] = useState(0);
   const [canPrev, setCanPrev] = useState(false);
   const [canNext, setCanNext] = useState(true);
@@ -237,6 +240,17 @@ export function Blog() {
   }, []);
 
   useEffect(() => {
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => {
+      prefersReducedMotionRef.current = media.matches;
+    };
+
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, []);
+
+  useEffect(() => {
     const container = scrollRef.current;
     if (!container) return;
 
@@ -250,36 +264,41 @@ export function Blog() {
     };
   }, [syncFromScroll]);
 
-  const scrollToIndex = useCallback((index: number) => {
-    const container = scrollRef.current;
-    if (!container) return;
+  const { isDragging } = useHorizontalDragScroll(scrollRef, syncFromScroll);
 
-    const clamped = Math.max(0, Math.min(posts.length - 1, index));
-    const card = container.querySelectorAll<HTMLElement>("[data-news-card]")[clamped];
-    if (!card) return;
+  const scrollToIndex = useCallback(
+    (index: number) => {
+      const container = scrollRef.current;
+      if (!container) return;
 
-    const padStart = getScrollPaddingStart(container);
-    const targetLeft = Math.max(0, card.offsetLeft - padStart);
-    const isRapid = scrollingRef.current;
+      const clamped = Math.max(0, Math.min(posts.length - 1, index));
+      const card = container.querySelectorAll<HTMLElement>("[data-news-card]")[clamped];
+      if (!card) return;
 
-    scrollingRef.current = true;
-    setCurrent(clamped);
-    setCanPrev(clamped > 0);
-    setCanNext(clamped < posts.length - 1);
+      const padStart = getScrollPaddingStart(container);
+      const targetLeft = Math.max(0, card.offsetLeft - padStart);
+      const isRapid = scrollingRef.current;
 
-    container.scrollTo({
-      left: targetLeft,
-      behavior: isRapid ? "auto" : "smooth",
-    });
+      scrollingRef.current = true;
+      setCurrent(clamped);
+      setCanPrev(clamped > 0);
+      setCanNext(clamped < posts.length - 1);
 
-    const release = () => {
-      scrollingRef.current = false;
-      syncFromScroll();
-    };
+      container.scrollTo({
+        left: targetLeft,
+        behavior: isRapid || prefersReducedMotionRef.current ? "auto" : "smooth",
+      });
 
-    container.addEventListener("scrollend", release, { once: true });
-    window.setTimeout(release, isRapid ? 80 : 300);
-  }, [syncFromScroll]);
+      const release = () => {
+        scrollingRef.current = false;
+        syncFromScroll();
+      };
+
+      container.addEventListener("scrollend", release, { once: true });
+      window.setTimeout(release, isRapid ? 80 : 300);
+    },
+    [syncFromScroll],
+  );
 
   return (
     <section className="bg-wssu-white py-24 md:py-32">
@@ -290,8 +309,11 @@ export function Blog() {
             <span className="text-wssu-black">Ramily</span>
             <span className="text-wssu-black">News.</span>
           </h2>
-          <div className="section-intro-grid flex flex-col justify-end">
+          <div className="section-intro-grid section-intro-grid--full hidden w-full flex-col justify-end md:flex">
             <div className="flex w-full flex-wrap items-center justify-end gap-3">
+              <DemoLink className="shrink-0 border border-wssu-black px-6 py-3.5 text-xs font-bold uppercase tracking-[0.15em] text-wssu-black transition-colors hover:bg-wssu-black hover:text-wssu-white">
+                All news
+              </DemoLink>
               <div className="flex shrink-0 items-center">
                 <ConnectedArrowControls
                   onPrev={() => scrollToIndex(current - 1)}
@@ -302,20 +324,20 @@ export function Blog() {
                   nextLabel="Next article"
                 />
               </div>
-              <DemoLink className="shrink-0 border border-wssu-black px-6 py-3.5 text-xs font-bold uppercase tracking-[0.15em] text-wssu-black transition-colors hover:bg-wssu-black hover:text-wssu-white">
-                All news
-              </DemoLink>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="mt-16 w-screen">
+      <div className="mt-16 w-full">
         <div
           ref={scrollRef}
-          className="news-carousel-scroll overflow-x-auto overscroll-x-contain scroll-smooth snap-x snap-mandatory [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+          className={cn(
+            "news-carousel-scroll touch-pan-x overflow-x-auto overscroll-x-contain scroll-smooth snap-x snap-mandatory [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden",
+            isDragging ? "cursor-grabbing select-none" : "cursor-grab",
+          )}
         >
-          <div className="section-scroll-inset flex w-max gap-8">
+          <div className="section-scroll-inset flex w-max gap-5 pr-[max(1.5rem,calc((100vw-min(100vw,1440px))/2+1.5rem))] md:gap-8 md:pr-0">
             {posts.map((post, idx) => (
               <div
                 key={post.title}
@@ -326,6 +348,20 @@ export function Blog() {
               </div>
             ))}
           </div>
+        </div>
+
+        <div className="section-scroll-inset mt-8 flex items-center justify-between gap-4 md:hidden">
+          <DemoLink className="shrink-0 border border-wssu-black px-6 py-3.5 text-xs font-bold uppercase tracking-[0.15em] text-wssu-black transition-colors hover:bg-wssu-black hover:text-wssu-white">
+            All news
+          </DemoLink>
+          <ConnectedArrowControls
+            onPrev={() => scrollToIndex(current - 1)}
+            onNext={() => scrollToIndex(current + 1)}
+            canPrev={canPrev}
+            canNext={canNext}
+            prevLabel="Previous article"
+            nextLabel="Next article"
+          />
         </div>
       </div>
     </section>

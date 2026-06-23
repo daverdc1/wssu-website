@@ -15,10 +15,23 @@ import { OptimizedImage } from "@/components/wssu/OptimizedImage";
 import { cn } from "@/lib/utils";
 
 const HERO_VIDEO_ID = "g-VSShk-0h8";
+const HERO_VIDEO_START_SECONDS = 6.5;
+const HERO_VIDEO_END_SECONDS = 55;
+const COVER_SCALE = 1.12;
+
+const QUALITY_PREF = ["highres", "hd2160", "hd1440", "hd1080"] as const;
+const QUALITY_FALLBACK = ["hd720", "large", "medium"] as const;
 
 type YouTubePlayer = {
   playVideo: () => void;
   pauseVideo: () => void;
+  seekTo: (seconds: number, allowSeekAhead?: boolean) => void;
+  setPlaybackQuality: (quality: string) => void;
+  getAvailableQualityLevels: () => string[];
+  getPlayerState: () => number;
+  getCurrentTime: () => number;
+  getDuration: () => number;
+  setSize: (width: number, height: number) => void;
   destroy: () => void;
 };
 
@@ -30,7 +43,7 @@ type YouTubePlayerConstructor = new (
     playerVars?: Record<string, number | string>;
     events?: {
       onReady?: (event: { target: YouTubePlayer }) => void;
-      onStateChange?: (event: { data: number }) => void;
+      onStateChange?: (event: { data: number; target: YouTubePlayer }) => void;
     };
   },
 ) => YouTubePlayer;
@@ -81,6 +94,47 @@ function loadYouTubeIframeApi() {
   });
 
   return youtubeApiPromise;
+}
+
+function getCoverPlayerDimensions() {
+  const vw = window.innerWidth * COVER_SCALE;
+  const vh = window.innerHeight * COVER_SCALE;
+  return {
+    width: Math.ceil(Math.max(vw, (vh * 16) / 9)),
+    height: Math.ceil(Math.max(vh, (vw * 9) / 16)),
+  };
+}
+
+function syncPlayerSize(player: YouTubePlayer) {
+  const { width, height } = getCoverPlayerDimensions();
+  player.setSize(width, height);
+}
+
+function restartHeroVideo(player: YouTubePlayer) {
+  player.seekTo(HERO_VIDEO_START_SECONDS, true);
+  player.playVideo();
+  window.setTimeout(() => applyMaxPlaybackQuality(player), 250);
+}
+
+function applyMaxPlaybackQuality(player: YouTubePlayer) {
+  const levels = player.getAvailableQualityLevels?.() ?? [];
+
+  for (const quality of QUALITY_PREF) {
+    if (levels.includes(quality)) {
+      player.setPlaybackQuality(quality);
+      return;
+    }
+  }
+
+  for (const quality of QUALITY_FALLBACK) {
+    if (levels.includes(quality)) {
+      player.setPlaybackQuality(quality);
+      return;
+    }
+  }
+
+  // YouTube sometimes omits levels until after playback starts.
+  player.setPlaybackQuality("hd1080");
 }
 
 function usePrefersReducedMotion() {
@@ -152,6 +206,8 @@ export function HeroVideoProvider({ children }: { children: ReactNode }) {
           playsinline: 1,
           loop: 1,
           playlist: HERO_VIDEO_ID,
+          start: HERO_VIDEO_START_SECONDS,
+          end: HERO_VIDEO_END_SECONDS,
           rel: 0,
           modestbranding: 1,
           disablekb: 1,
@@ -161,19 +217,33 @@ export function HeroVideoProvider({ children }: { children: ReactNode }) {
           autohide: 1,
           showinfo: 0,
           enablejsapi: 1,
+          hd: 1,
           origin: typeof window !== "undefined" ? window.location.origin : "",
         },
         events: {
           onReady: ({ target }) => {
             playerRef.current = target;
+            syncPlayerSize(target);
             setPlayerReady(true);
             setIsPlaying(true);
+            target.seekTo(HERO_VIDEO_START_SECONDS, true);
             target.playVideo();
+            window.setTimeout(() => applyMaxPlaybackQuality(target), 250);
+            window.setTimeout(() => applyMaxPlaybackQuality(target), 1500);
           },
-          onStateChange: ({ data }) => {
+          onStateChange: ({ data, target }) => {
             if (!window.YT) return;
-            if (data === window.YT.PlayerState.PLAYING) setIsPlaying(true);
-            if (data === window.YT.PlayerState.PAUSED || data === window.YT.PlayerState.ENDED) {
+            if (data === window.YT.PlayerState.PLAYING) {
+              setIsPlaying(true);
+              applyMaxPlaybackQuality(target);
+              return;
+            }
+            if (data === window.YT.PlayerState.ENDED) {
+              restartHeroVideo(target);
+              setIsPlaying(true);
+              return;
+            }
+            if (data === window.YT.PlayerState.PAUSED) {
               setIsPlaying(false);
             }
           },
@@ -190,6 +260,41 @@ export function HeroVideoProvider({ children }: { children: ReactNode }) {
       setPlayerReady(false);
     };
   }, [videoEnabled, playerHostId]);
+
+  useEffect(() => {
+    if (!playerReady || !playerRef.current) return;
+
+    const onResize = () => {
+      if (!playerRef.current) return;
+      syncPlayerSize(playerRef.current);
+      applyMaxPlaybackQuality(playerRef.current);
+    };
+
+    window.addEventListener("resize", onResize, { passive: true });
+    return () => window.removeEventListener("resize", onResize);
+  }, [playerReady]);
+
+  useEffect(() => {
+    if (!playerReady || !isPlaying || !playerRef.current || !window.YT) return;
+
+    const guardLoop = window.setInterval(() => {
+      const player = playerRef.current;
+      if (!player || !window.YT) return;
+
+      const state = player.getPlayerState?.();
+      if (state === window.YT.PlayerState.ENDED) {
+        restartHeroVideo(player);
+        return;
+      }
+
+      const current = player.getCurrentTime?.() ?? 0;
+      if (current >= HERO_VIDEO_END_SECONDS - 0.35 || current < HERO_VIDEO_START_SECONDS - 0.5) {
+        restartHeroVideo(player);
+      }
+    }, 400);
+
+    return () => window.clearInterval(guardLoop);
+  }, [isPlaying, playerReady]);
 
   const togglePlayback = useCallback(() => {
     const player = playerRef.current;
@@ -231,14 +336,14 @@ export function HeroVideoLayer() {
         <div
           className={cn(
             "absolute inset-0 overflow-hidden transition-opacity duration-700",
-            playerReady ? "opacity-65" : "opacity-0",
+            playerReady ? "opacity-100" : "opacity-0",
           )}
           aria-hidden="true"
         >
           <div className="hero-video-frame pointer-events-none absolute">
             <div
               id={playerHostId}
-              className="size-full [&_iframe]:size-full [&_iframe]:pointer-events-none"
+              className="size-full [&_iframe]:size-full [&_iframe]:border-0 [&_iframe]:pointer-events-none [&_iframe]:transform-gpu"
             />
           </div>
           {playerReady ? (
@@ -248,15 +353,11 @@ export function HeroVideoLayer() {
             />
           ) : null}
           <div
-            className="pointer-events-none absolute inset-x-0 top-0 z-[2] h-32 bg-gradient-to-b from-wssu-black via-wssu-black/90 to-transparent"
+            className="pointer-events-none absolute inset-x-0 bottom-0 z-[2] h-56 bg-gradient-to-t from-wssu-black via-wssu-black/45 to-transparent md:h-72"
             aria-hidden="true"
           />
           <div
-            className="pointer-events-none absolute inset-x-0 bottom-0 z-[2] h-32 bg-gradient-to-t from-wssu-black via-wssu-black/90 to-transparent"
-            aria-hidden="true"
-          />
-          <div
-            className="pointer-events-none absolute inset-0 z-[2] bg-[radial-gradient(ellipse_at_center,transparent_42%,rgba(9,9,11,0.55)_100%)]"
+            className="pointer-events-none absolute inset-0 z-[2] bg-[radial-gradient(ellipse_at_22%_50%,transparent_45%,rgba(9,9,11,0.22)_100%)]"
             aria-hidden="true"
           />
         </div>
@@ -272,11 +373,15 @@ export function HeroVideoLayer() {
       )}
 
       <div
-        className="absolute inset-0 bg-gradient-to-t from-wssu-black via-wssu-black/55 to-wssu-black/20"
+        className="absolute inset-0 bg-gradient-to-r from-wssu-black/70 via-wssu-black/20 to-transparent"
         aria-hidden="true"
       />
       <div
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-wssu-black to-transparent"
+        className="pointer-events-none absolute inset-x-0 top-0 z-[3] h-32 bg-gradient-to-b from-wssu-black via-wssu-black/35 to-transparent md:h-40"
+        aria-hidden="true"
+      />
+      <div
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-80 bg-gradient-to-t from-wssu-black via-wssu-black/55 to-transparent md:h-96"
         aria-hidden="true"
       />
     </>
@@ -285,28 +390,13 @@ export function HeroVideoLayer() {
 
 export function HeroVideoControls() {
   const { showVideo, isPlaying, playerReady, togglePlayback, enableVideo } = useHeroVideo();
-  const [visible, setVisible] = useState(true);
-
-  useEffect(() => {
-    const hero = document.getElementById("hero");
-    if (!hero) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => setVisible(entry.isIntersecting),
-      { threshold: 0.08 },
-    );
-
-    observer.observe(hero);
-    return () => observer.disconnect();
-  }, []);
-
-  if (!visible) return null;
 
   const showAsPlaying = !playerReady || isPlaying;
 
   const buttonClass = cn(
-    "inline-flex items-center gap-2 border border-wssu-white/25 bg-wssu-black/50 px-3 py-2 text-[10px] font-bold uppercase tracking-[0.18em] text-wssu-white backdrop-blur-sm transition-colors",
-    "hover:border-wssu-white/45",
+    "inline-flex items-center justify-center border border-wssu-white/40 bg-wssu-black/65 text-wssu-white shadow-[0_4px_16px_rgba(0,0,0,0.3)] backdrop-blur-sm transition-colors",
+    "p-2 md:gap-2 md:px-2.5 md:py-2",
+    "hover:border-wssu-white/60 hover:bg-wssu-black/80",
     "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wssu-white",
   );
 
@@ -316,24 +406,31 @@ export function HeroVideoControls() {
       onClick={togglePlayback}
       disabled={!playerReady}
       aria-label={showAsPlaying ? "Pause background video" : "Play background video"}
-      className={cn(buttonClass, !playerReady && "cursor-wait opacity-70")}
+      className={cn(
+        buttonClass,
+        "pointer-events-auto",
+        !playerReady && "cursor-wait opacity-70",
+      )}
     >
       {showAsPlaying ? (
-        <Pause className="size-3.5" strokeWidth={2.25} aria-hidden="true" />
+        <Pause className="size-3" strokeWidth={2.25} aria-hidden="true" />
       ) : (
-        <Play className="size-3.5" strokeWidth={2.25} aria-hidden="true" />
+        <Play className="size-3" strokeWidth={2.25} aria-hidden="true" />
       )}
-      <span>{showAsPlaying ? "Pause video" : "Play video"}</span>
+      <span className="sr-only">{showAsPlaying ? "Pause video" : "Play video"}</span>
+      <span className="hidden text-[10px] font-bold uppercase tracking-[0.18em] md:inline">
+        {showAsPlaying ? "Pause video" : "Play video"}
+      </span>
     </button>
   ) : (
     <button
       type="button"
       onClick={enableVideo}
       aria-label="Play background video"
-      className={buttonClass}
+      className={cn(buttonClass, "pointer-events-auto")}
     >
-      <Play className="size-3.5" strokeWidth={2.25} aria-hidden="true" />
-      <span>Play video</span>
+      <Play className="size-3" strokeWidth={2.25} aria-hidden="true" />
+      <span className="sr-only">Play video</span>
     </button>
   );
 }

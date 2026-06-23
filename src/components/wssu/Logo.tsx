@@ -6,9 +6,10 @@ type LogoProps = {
   style?: CSSProperties;
   /** Light backgrounds use full color; sticky uses the compact lockup; on-dark inverts the nav logo; footer is full lockup; footer-mono is the white wordmark for dark backgrounds. */
   tone?: "default" | "on-dark" | "footer" | "footer-mono" | "sticky";
+  "aria-hidden"?: boolean;
 };
 
-export function Logo({ className, style, tone = "default" }: LogoProps) {
+export function Logo({ className, style, tone = "default", "aria-hidden": ariaHidden }: LogoProps) {
   const src =
     tone === "footer"
       ? "/wssu-logo-footer.svg"
@@ -21,7 +22,8 @@ export function Logo({ className, style, tone = "default" }: LogoProps) {
   return (
     <img
       src={src}
-      alt="Winston-Salem State University"
+      alt={ariaHidden ? "" : "Winston-Salem State University"}
+      aria-hidden={ariaHidden}
       style={style}
       className={cn(
         "h-9 w-auto shrink-0",

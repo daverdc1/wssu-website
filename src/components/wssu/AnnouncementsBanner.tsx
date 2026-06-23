@@ -41,6 +41,11 @@ export function AnnouncementsBanner() {
 
   if (!enabled || dismissed) return null;
 
+  const ctaClassName = cn(
+    "announcement-banner-cta shrink-0 whitespace-nowrap text-sm font-semibold leading-none text-wssu-white underline decoration-wssu-white underline-offset-[3px] md:text-[0.9375rem]",
+    "transition-colors hover:text-wssu-gold hover:decoration-wssu-gold",
+  );
+
   return (
     <div
       role="region"
@@ -49,6 +54,7 @@ export function AnnouncementsBanner() {
         "relative z-[60] border-b border-wssu-black/10 text-wssu-white",
         isHighPriority ? "bg-wssu-red" : "bg-wssu-black",
       )}
+      data-announcement-banner
     >
       <div className="flex h-1 w-full" aria-hidden="true">
         {isHighPriority ? (
@@ -62,11 +68,11 @@ export function AnnouncementsBanner() {
         )}
       </div>
 
-      <div className="section-container flex h-11 items-center justify-between gap-4 md:h-12">
-        <div className="flex min-w-0 flex-1 items-center gap-3 font-sans text-sm leading-none md:text-[0.9375rem]">
+      <div className="announcement-banner-inner flex min-h-11 items-center gap-2 py-2 md:h-12 md:gap-4 md:py-0">
+        <div className="flex min-w-0 flex-1 items-center gap-2 font-sans text-sm leading-none md:gap-3 md:text-[0.9375rem]">
           <span
             className={cn(
-              "inline-flex h-5 shrink-0 items-center font-mono text-[10px] font-medium uppercase leading-none tracking-[0.28em]",
+              "hidden h-5 shrink-0 items-center font-mono text-[10px] font-medium uppercase leading-none tracking-[0.28em] sm:inline-flex",
               isHighPriority
                 ? "rounded-full bg-wssu-black px-2.5 text-wssu-white"
                 : "text-wssu-gold",
@@ -74,18 +80,16 @@ export function AnnouncementsBanner() {
           >
             Announcement
           </span>
-          <span className="min-w-0 leading-snug text-wssu-white/90">
-            {message}{" "}
-            <DemoLink className="font-semibold text-wssu-white underline underline-offset-[3px] decoration-wssu-white/70 transition-colors hover:text-wssu-gold hover:decoration-wssu-gold">
-              {ctaLabel}
-            </DemoLink>
-          </span>
+          <div className="flex min-w-0 flex-1 items-baseline">
+            <p className="min-w-0 truncate leading-none text-wssu-white/90">{message}</p>
+            <DemoLink className={ctaClassName}>{ctaLabel}</DemoLink>
+          </div>
         </div>
         <button
           type="button"
           onClick={dismiss}
           aria-label="Dismiss announcement"
-          className="shrink-0 rounded-sm p-1 text-wssu-white/70 transition-colors hover:bg-wssu-white/10 hover:text-wssu-white"
+          className="-mr-0.5 shrink-0 rounded-sm p-0.5 text-wssu-white/70 transition-colors hover:bg-wssu-white/10 hover:text-wssu-white md:mr-0 md:p-1"
         >
           <X className="size-4" strokeWidth={2} />
         </button>

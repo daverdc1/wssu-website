@@ -73,32 +73,27 @@ const eventCategoryStyles: Record<
     dateBg: string;
     dateText: string;
     lineColor: "gold" | "teal" | "lime" | "violet" | "red";
-    hoverBorder: string;
   }
 > = {
   Admissions: {
     dateBg: "bg-wssu-gold",
     dateText: "text-wssu-black",
     lineColor: "gold",
-    hoverBorder: "hover:border-wssu-gold/50",
   },
   Campus: {
     dateBg: "bg-wssu-teal",
     dateText: "text-wssu-white",
     lineColor: "teal",
-    hoverBorder: "hover:border-wssu-teal/45",
   },
   Virtual: {
     dateBg: "bg-wssu-lime",
     dateText: "text-wssu-black",
     lineColor: "lime",
-    hoverBorder: "hover:border-wssu-lime/45",
   },
   Athletics: {
     dateBg: "bg-wssu-red",
     dateText: "text-wssu-white",
     lineColor: "red",
-    hoverBorder: "hover:border-wssu-red/45",
   },
 };
 
@@ -276,8 +271,7 @@ export function Events() {
                     <article
                       key={event.id}
                       className={cn(
-                        "group flex flex-col gap-5 border border-wssu-black/10 bg-wssu-white/60 p-6 transition-[background-color,border-color] duration-300 hover:bg-wssu-white/90 md:flex-row md:items-start md:gap-6 md:p-8",
-                        accent.hoverBorder,
+                        "photo-corner-cut group flex flex-col gap-5 overflow-hidden bg-wssu-white/60 p-6 transition-[background-color] duration-300 [--photo-cut:2rem] hover:bg-wssu-white/90 md:flex-row md:items-start md:gap-6 md:p-8 md:[--photo-cut:2.75rem]",
                       )}
                       style={{ "--event-delay": `${index * 70}ms` } as CSSProperties}
                     >
@@ -302,7 +296,7 @@ export function Events() {
                           {event.description}
                         </p>
 
-                        <DemoLink className="group/link inline-flex flex-col items-start text-xs font-bold uppercase tracking-[0.15em] text-wssu-black/60 transition-colors group-hover:text-wssu-black hover:text-wssu-black">
+                        <DemoLink className="group/link relative inline-flex text-xs font-bold uppercase tracking-[0.15em] text-wssu-black/60 transition-colors group-hover:text-wssu-black hover:text-wssu-black">
                           <span className="inline-flex items-center gap-2">
                             Save my spot
                             <ArrowRight
@@ -311,6 +305,7 @@ export function Events() {
                             />
                           </span>
                           <HoverAccentLine
+                            floating
                             color={accent.lineColor}
                             expandOn="group-hover:w-12 group-hover/link:w-12"
                           />

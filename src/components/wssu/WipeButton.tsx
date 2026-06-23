@@ -13,6 +13,8 @@ export type WipeFill = keyof typeof wipeFillColors;
 type WipeButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   children: ReactNode;
   wipeFill: WipeFill;
+  /** Subtle lift on hover — off for compact controls like the nav menu button. */
+  lift?: boolean;
 };
 
 export function WipeButtonFill({ fill }: { fill: WipeFill }) {
@@ -42,13 +44,18 @@ export function WipeButton({
   children,
   className,
   wipeFill,
+  lift = false,
   type = "button",
   ...props
 }: WipeButtonProps) {
   return (
     <button
       type={type}
-      className={cn("btn-wipe relative isolate cursor-pointer overflow-hidden", className)}
+      className={cn(
+        "btn-wipe relative isolate cursor-pointer overflow-hidden",
+        lift && "transition-transform motion-safe:hover:-translate-y-0.5",
+        className,
+      )}
       {...props}
     >
       <WipeButtonFill fill={wipeFill} />

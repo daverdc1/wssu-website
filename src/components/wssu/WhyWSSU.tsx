@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { MarkerCircle } from "./MarkerCircle";
 import { OptimizedImage } from "./OptimizedImage";
 import { SectionHeaderGrid } from "./SectionHeaderGrid";
-import { photos, whyImage } from "./photos";
+import { whyBelongImage, whyCareerImage, whyImage } from "./photos";
 
 type WhyAccent = "gold" | "teal" | "lime";
 
@@ -28,13 +28,13 @@ const highlights: {
     body: "WSSU is North Carolina's only Carnegie-designated Opportunity College — and ranked the #1 HBCU in the state for value. We're formally recognized for doing what others only promise: changing the trajectory of students' lives. With over 9,000 alumni rooted in the Piedmont Triad and $600M in annual regional economic impact, a WSSU degree doesn't just open doors — it proves they were opened.",
   },
   {
-    image: photos[4],
+    image: whyCareerImage,
     accent: "teal",
     title: "Your career starts on Day One.",
     body: "Our programs are built around what North Carolina's workforce actually needs — from nursing and bio-manufacturing to business and tech. Partnerships with regional employers and a guaranteed law school pathway with Wake Forest University mean real opportunities are already in place before you graduate.",
   },
   {
-    image: photos[1],
+    image: whyBelongImage,
     accent: "lime",
     title: "You belong here. All of you.",
     body: "WSSU supports the whole student: holistic well-being, personalized advising, and faculty who genuinely invest in your success. Our Ramily of alumni and students is united by more than a degree — it's a shared purpose that lasts long after graduation day.",
@@ -68,7 +68,7 @@ function WhyPhotoMobile({ index }: { index: number }) {
       <OptimizedImage
         src={item.image}
         alt={item.title}
-        sizes="90vw"
+        sizes="(min-width: 768px) 1600px, 100vw"
         className="size-full object-cover"
       />
       <div className="absolute inset-0 ring-1 ring-inset ring-wssu-black/10" />
@@ -99,7 +99,7 @@ function WhyPhotoPanel({
         key={displayed.image}
         src={displayed.image}
         alt={displayed.title}
-        sizes="(min-width: 1024px) 24rem, 90vw"
+        sizes="(min-width: 768px) 1600px, 100vw"
         className={cn("size-full object-cover", imageReveal && "program-image-reveal")}
       />
       <span
@@ -143,6 +143,21 @@ export function WhyWSSU() {
   );
   const articleRefs = useRef<(HTMLElement | null)[]>([]);
   const activeIndexRef = useRef(0);
+
+  const jumpToHighlight = useCallback((index: number) => {
+    const article = articleRefs.current[index];
+    if (!article) return;
+
+    article.scrollIntoView({ behavior: "smooth", block: "center" });
+
+    if (index === activeIndexRef.current) return;
+
+    setDirection(index > activeIndexRef.current ? 1 : -1);
+    setImageReveal(false);
+    setTransitionId((id) => id + 1);
+    setActiveIndex(index);
+    activeIndexRef.current = index;
+  }, []);
 
   useEffect(() => {
     if (activeIndex === displayIndex) return;
@@ -255,7 +270,18 @@ export function WhyWSSU() {
             {highlights.map((item, index) => (
               <div
                 key={item.title}
-                className="relative py-12 md:py-16 lg:py-20"
+                role="button"
+                tabIndex={0}
+                aria-current={activeIndex === index ? "true" : undefined}
+                aria-label={`Jump to ${item.title}`}
+                onClick={() => jumpToHighlight(index)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    jumpToHighlight(index);
+                  }
+                }}
+                className="relative cursor-pointer py-12 outline-none focus-visible:ring-2 focus-visible:ring-wssu-red/70 focus-visible:ring-offset-4 md:py-16 lg:py-20"
               >
                 <div
                   className="absolute left-0 top-0 bottom-0 w-1 overflow-hidden bg-wssu-black/10"
@@ -279,6 +305,7 @@ export function WhyWSSU() {
                     className={cn(
                       "relative transition-opacity duration-500 ease-out",
                       (centerVisibility[index] ?? 0) > 0 ? "opacity-100" : "opacity-35",
+                      activeIndex === index ? "opacity-100" : "hover:opacity-80",
                     )}
                   >
                     <WhyPhotoMobile index={index} />

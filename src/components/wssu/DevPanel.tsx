@@ -27,7 +27,7 @@ export function DevPanel() {
 
   return (
     <div className="pointer-events-none fixed bottom-6 left-6 z-[200] font-sans text-xs text-wssu-black">
-      <div className="pointer-events-auto flex items-end gap-0">
+      <div className="relative">
         <button
           type="button"
           onClick={() => setOpen((value) => !value)}
@@ -35,7 +35,7 @@ export function DevPanel() {
           aria-controls="wssu-dev-panel"
           aria-label={open ? "Close announcement controls" : "Open announcement controls"}
           className={cn(
-            "flex size-9 shrink-0 items-center justify-center rounded-full border border-wssu-black/12 bg-wssu-white text-wssu-black/65 shadow-[0_8px_28px_-12px_rgba(9,9,11,0.35)] transition-[color,background-color,transform,border-color] duration-300 ease-out",
+            "pointer-events-auto flex size-9 shrink-0 items-center justify-center rounded-full border border-wssu-black/12 bg-wssu-white text-wssu-black/65 shadow-[0_8px_28px_-12px_rgba(9,9,11,0.35)] transition-[color,background-color,transform,border-color] duration-300 ease-out",
             "hover:border-wssu-teal/35 hover:bg-wssu-paper hover:text-wssu-teal",
             open && "border-wssu-teal/35 text-wssu-teal",
           )}
@@ -47,10 +47,10 @@ export function DevPanel() {
           id="wssu-dev-panel"
           aria-hidden={!open}
           className={cn(
-            "origin-bottom-left overflow-hidden rounded-sm border border-wssu-black/12 bg-wssu-white shadow-[0_12px_40px_-16px_rgba(9,9,11,0.45)] transition-[opacity,transform] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-[opacity,transform]",
+            "absolute bottom-0 left-[calc(100%+0.5rem)] w-40 origin-bottom-left overflow-hidden rounded-sm border border-wssu-black/12 bg-wssu-white shadow-[0_12px_40px_-16px_rgba(9,9,11,0.45)] transition-[opacity,transform] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-[opacity,transform]",
             open
-              ? "pointer-events-auto w-40 translate-x-0 scale-100 opacity-100"
-              : "pointer-events-none w-40 -translate-x-4 scale-[0.98] opacity-0",
+              ? "pointer-events-auto translate-x-0 scale-100 opacity-100"
+              : "pointer-events-none -translate-x-2 scale-[0.98] opacity-0",
           )}
         >
           <div className="w-40 px-3 py-3">

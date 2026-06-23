@@ -5,9 +5,14 @@ import sharp from "sharp";
 const ROOT = process.cwd();
 const SOURCE_DIR = path.join(ROOT, "photos", "source");
 const OUTPUT_DIR = path.join(ROOT, "public", "photos");
-const WIDTHS = [640, 960, 1440];
-const WEBP_QUALITY = 82;
-const JPEG_QUALITY = 82;
+const MANIFEST_PATH = path.join(ROOT, "src", "lib", "photo-manifest.json");
+const WIDTHS = [640, 960, 1280, 1600];
+const MAX_OUTPUT_WIDTH = 1600;
+const WEBP_QUALITY = 85;
+const JPEG_QUALITY = 85;
+const QUALITY_OVERRIDES = {
+  "why-career": { webp: 88, jpeg: 92 },
+};
 
 const SUPPORTED = new Set([".jpg", ".jpeg", ".png", ".webp", ".avif", ".tif", ".tiff"]);
 
@@ -24,29 +29,43 @@ async function optimizeOne(filename) {
   const slug = path.parse(filename).name;
   const image = sharp(input, { failOn: "none" }).rotate();
   const metadata = await image.metadata();
-  const maxWidth = metadata.width ?? 1440;
+  const maxWidth = metadata.width ?? MAX_OUTPUT_WIDTH;
 
-  const targetWidths = WIDTHS.filter((width) => width <= maxWidth);
+  const targetWidths = WIDTHS.filter((width) => width <= maxWidth && width <= MAX_OUTPUT_WIDTH);
   if (targetWidths.length === 0) {
-    targetWidths.push(maxWidth);
-  } else if (!targetWidths.includes(Math.min(maxWidth, 1440))) {
-    targetWidths.push(Math.min(maxWidth, WIDTHS[WIDTHS.length - 1]));
+    targetWidths.push(Math.min(maxWidth, MAX_OUTPUT_WIDTH));
+  }
+
+  const outputCap = Math.min(maxWidth, MAX_OUTPUT_WIDTH);
+  if (!targetWidths.includes(outputCap)) {
+    targetWidths.push(outputCap);
   }
 
   const uniqueWidths = [...new Set(targetWidths)].sort((a, b) => a - b);
+  const quality = QUALITY_OVERRIDES[slug] ?? { webp: WEBP_QUALITY, jpeg: JPEG_QUALITY };
   let totalBytes = 0;
 
   for (const width of uniqueWidths) {
-    const resized = sharp(input, { failOn: "none" }).rotate().resize({
-      width,
-      withoutEnlargement: true,
-    });
+    const resized = sharp(input, { failOn: "none" })
+      .rotate()
+      .resize({
+        width,
+        withoutEnlargement: true,
+        kernel: sharp.kernel.lanczos3,
+      })
+      .sharpen({ sigma: 0.5, m1: 0.5, m2: 0.35 });
 
     const webpPath = path.join(OUTPUT_DIR, `${slug}-${width}.webp`);
     const jpegPath = path.join(OUTPUT_DIR, `${slug}-${width}.jpg`);
 
-    await resized.clone().webp({ quality: WEBP_QUALITY, effort: 4 }).toFile(webpPath);
-    await resized.clone().jpeg({ quality: JPEG_QUALITY, mozjpeg: true }).toFile(jpegPath);
+    await resized
+      .clone()
+      .webp({ quality: quality.webp, effort: 4, smartSubsample: false })
+      .toFile(webpPath);
+    await resized
+      .clone()
+      .jpeg({ quality: quality.jpeg, mozjpeg: true })
+      .toFile(jpegPath);
 
     totalBytes += (await fs.stat(webpPath)).size + (await fs.stat(jpegPath)).size;
   }
@@ -91,6 +110,10 @@ async function main() {
   for (const filename of sources) {
     results.push(await optimizeOne(filename));
   }
+
+  const manifest = Object.fromEntries(results.map((result) => [result.slug, result.widths]));
+  await fs.mkdir(path.dirname(MANIFEST_PATH), { recursive: true });
+  await fs.writeFile(`${MANIFEST_PATH}`, `${JSON.stringify(manifest, null, 2)}\n`);
 
   console.log(`Optimized ${results.length} photo(s) into public/photos:`);
   for (const result of results) {

@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { ChevronDown } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { DemoLink } from "./DemoLink";
 import { CtaArrowIcon } from "./CtaArrowIcon";
+import { ctaButtonLift } from "./navButtonStyles";
 import { WipeButton } from "./WipeButton";
 import { HeroVideoControls, HeroVideoLayer } from "@/lib/hero-video";
 import { MarkerCircle } from "./MarkerCircle";
@@ -40,38 +42,37 @@ export function Hero() {
   const showScrollHint = heroInView && scrollHintOpacity > 0.05;
 
   return (
-    <section id="hero" className="relative bg-wssu-black">
+    <section id="hero" className="relative -mt-20 bg-wssu-black md:-mt-[5.5rem]">
       <div className="absolute inset-0 min-h-[100svh] overflow-hidden">
         <HeroVideoLayer />
         <div className="absolute inset-x-0 top-0 h-px bg-wssu-red/60" />
       </div>
 
       <div className="relative isolate z-10 flex min-h-[100svh] flex-col">
-        <div className="absolute right-6 top-6 z-40 flex flex-col items-end gap-5 md:right-10 md:top-10 md:gap-6">
+        <div className="pointer-events-none absolute right-6 top-24 z-40 flex flex-col items-end gap-4 md:right-10 md:top-28 md:gap-5">
           <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-wssu-white/60">
             (00) — Winston-Salem · NC
           </span>
-          <div className="pointer-events-auto">
-            <HeroVideoControls />
-          </div>
+          <HeroVideoControls />
         </div>
 
         <div className="relative z-30 flex min-h-0 flex-1 flex-col">
           <div
-            className="pointer-events-none shrink-0 h-[clamp(6rem,13vh,8rem)] md:h-[clamp(5.5rem,11vh,7rem)] lg:h-[clamp(6rem,10vh,6.5rem)]"
+            className="pointer-events-none shrink-0 h-[calc(5rem+2.5rem)] md:h-[calc(5.5rem+3rem)] lg:h-[calc(5.5rem+3.5rem)]"
             aria-hidden="true"
           />
+          <div className="min-h-6 flex-1 shrink md:min-h-8" aria-hidden="true" />
 
-          <div className="section-container mt-auto w-full pb-5 md:pb-6">
+          <div className="w-full shrink-0 pb-5 pl-5 pr-3 sm:pl-6 sm:pr-4 md:pb-6 md:pl-10 md:pr-5 lg:pl-12">
             <h1 className="font-display flex flex-col uppercase text-wssu-white">
-              <span className="text-[clamp(1.875rem,4vw,4rem)] leading-[0.95] tracking-[-0.025em]">
+              <span className="text-[clamp(2.75rem,8.5vw,7.75rem)] leading-[0.9] tracking-[-0.025em]">
                 <span className="block">Future Focused</span>
                 <span className="block">Programs.</span>
               </span>
-              <span className="mt-4 text-[clamp(3rem,10vw,9rem)] leading-[0.9] tracking-[-0.025em] md:mt-6">
+              <span className="mt-4 text-[clamp(2.75rem,8.5vw,7.75rem)] leading-[0.9] tracking-[-0.025em] md:mt-6">
                 Real-World
               </span>
-              <span className="relative inline-block w-fit text-[clamp(3rem,10vw,9rem)] leading-[0.9] tracking-[-0.025em]">
+              <span className="relative inline-block w-fit text-[clamp(2.75rem,8.5vw,7.75rem)] leading-[0.9] tracking-[-0.025em]">
                 Results.
                 <MarkerCircle rotate={-3} size="hero" strokeWidth={4} />
               </span>
@@ -79,20 +80,20 @@ export function Hero() {
 
             <div className="relative z-30 mt-10 flex flex-wrap items-center gap-3 md:mt-14 lg:mt-16">
               <WipeButton
+                lift
                 wipeFill="black"
-                className="group font-display inline-flex items-center gap-3 border border-transparent bg-wssu-red px-8 py-4 text-lg uppercase tracking-[0.01em] text-wssu-white shadow-[0_8px_28px_rgba(0,0,0,0.35)] transition-transform hover:-translate-y-0.5 md:text-xl"
+                className="group font-display inline-flex items-center gap-3 border border-transparent bg-wssu-red px-8 py-4 text-lg uppercase tracking-[0.01em] text-wssu-white shadow-[0_8px_28px_rgba(0,0,0,0.35)] md:text-xl"
               >
                 Apply
                 <CtaArrowIcon />
               </WipeButton>
-              <DemoLink className="group font-display inline-flex items-center gap-3 border border-wssu-white/80 bg-wssu-black/35 px-8 py-4 text-lg uppercase tracking-[0.01em] text-wssu-white shadow-[0_8px_28px_rgba(0,0,0,0.25)] backdrop-blur-sm transition-colors hover:bg-wssu-white hover:text-wssu-black md:text-xl">
+              <DemoLink className={cn("group font-display inline-flex items-center gap-3 border border-wssu-white/80 bg-wssu-black/35 px-8 py-4 text-lg uppercase tracking-[0.01em] text-wssu-white shadow-[0_8px_28px_rgba(0,0,0,0.25)] backdrop-blur-sm transition-colors hover:bg-wssu-white hover:text-wssu-black md:text-xl", ctaButtonLift)}>
                 Explore Programs
                 <CtaArrowIcon />
               </DemoLink>
             </div>
 
-            <div className="relative z-30 mt-10 flex gap-6 md:mt-14 md:gap-8">
-              <div className="w-px shrink-0 self-stretch bg-wssu-white/20" aria-hidden="true" />
+            <div className="relative z-30 mt-10 md:mt-14">
               <p className="section-intro section-intro--dark hero-intro">
                 At WSSU, your education is built for where the world is going. From nursing and bio-manufacturing to business and the arts, our programs are aligned with what employers need—and what you deserve: a career that matters.
               </p>

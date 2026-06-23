@@ -93,9 +93,9 @@ export function Footer() {
               <ul key={links[0]} className="space-y-3 font-sans text-base">
                 {links.map((l) => (
                   <li key={l}>
-                    <DemoLink className="group flex flex-col items-start text-wssu-white/90 transition-colors hover:text-wssu-gold">
+                    <DemoLink className="group relative inline-flex text-wssu-white/90 transition-colors hover:text-wssu-gold">
                       {l}
-                      <HoverAccentLine color="gold" />
+                      <HoverAccentLine floating color="gold" />
                     </DemoLink>
                   </li>
                 ))}
@@ -105,8 +105,8 @@ export function Footer() {
         </div>
       </div>
 
-      <div className="section-container pb-10">
-        <div className="flex flex-col items-start justify-between gap-4 pt-2 font-sans text-xs text-wssu-white/70 md:flex-row md:items-center">
+      <div className="section-header-container pb-[max(2.5rem,env(safe-area-inset-bottom))] pt-2 md:pb-10">
+        <div className="flex flex-col items-start justify-between gap-4 font-sans text-xs text-wssu-white/70 md:flex-row md:items-center">
           <p>© {new Date().getFullYear()} Winston-Salem State University. All rights reserved.</p>
           <div className="flex flex-wrap gap-x-3 gap-y-2 md:ml-auto md:justify-end md:gap-x-4">
             {legalLinks.map((l) => (

@@ -4,7 +4,6 @@ import { cn } from "@/lib/utils";
 import { DemoLink } from "./DemoLink";
 import { WipeButton } from "./WipeButton";
 import { OptimizedImage } from "./OptimizedImage";
-import { HoverAccentLine } from "./HoverAccentLine";
 import { SubnavArrow } from "./SubnavArrow";
 import { SectionHeaderGrid } from "./SectionHeaderGrid";
 import { programs } from "./photos";
@@ -271,7 +270,7 @@ export function Programs() {
                 key={displayed.id}
                 src={displayed.image}
                 alt={displayed.heading}
-                sizes="(min-width: 1024px) 58vw, 100vw"
+                sizes="(min-width: 768px) 1024px, 100vw"
                 className={cn(
                   "size-full object-cover",
                   imageReveal && "program-image-reveal",
@@ -321,24 +320,18 @@ export function Programs() {
                 {active.body}
               </p>
               <div
-                className="program-content-child mt-8 flex flex-wrap items-center gap-6 md:gap-8"
+                className="program-content-child mt-8 flex w-full flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:items-center"
                 style={{ animationDelay: CONTENT_DELAYS[2] }}
               >
                 <WipeButton
                   wipeFill="red"
-                  className="inline-flex items-center bg-wssu-black px-6 py-3.5 text-xs font-bold uppercase tracking-[0.15em] text-wssu-white"
+                  className="inline-flex w-full items-center justify-center bg-wssu-black px-6 py-3.5 text-xs font-bold uppercase tracking-[0.15em] text-wssu-white sm:w-auto sm:justify-start sm:text-left [&_.btn-wipe__content]:w-full [&_.btn-wipe__content]:justify-center sm:[&_.btn-wipe__content]:justify-start"
                 >
                   Explore {active.title.split(",")[0].split(" and ")[0]} Programs
                 </WipeButton>
-                <DemoLink className="group/link inline-flex flex-col items-start text-xs font-bold uppercase tracking-[0.15em] text-wssu-black transition-colors hover:text-wssu-red">
-                  <span className="inline-flex items-center gap-2">
-                    <span>All majors</span>
-                    <ArrowRight
-                      className="size-4 transition-transform group-hover/link:translate-x-1"
-                      strokeWidth={2.5}
-                    />
-                  </span>
-                  <HoverAccentLine expandOn="group-hover/link:w-12" />
+                <DemoLink className="inline-flex w-full items-center justify-center gap-2 border border-wssu-black px-6 py-3.5 text-xs font-bold uppercase tracking-[0.15em] text-wssu-black transition-colors hover:bg-wssu-black hover:text-wssu-white sm:w-auto">
+                  All majors
+                  <ArrowRight className="size-4" strokeWidth={2.5} />
                 </DemoLink>
               </div>
             </div>
