@@ -44,9 +44,6 @@
   --color-wssu-gold: var(--wssu-gold);
   --color-wssu-teal: var(--wssu-teal);
   --color-wssu-lime: var(--wssu-lime);
-  --color-wssu-coral: var(--wssu-coral);
-  --color-wssu-violet: var(--wssu-violet);
-  --color-wssu-blue: var(--wssu-blue);
   --color-wssu-black: var(--wssu-black);
   --color-wssu-white: var(--wssu-white);
   --color-wssu-paper: var(--wssu-paper);
@@ -65,9 +62,6 @@
   --wssu-gold: #ffcd00;
   --wssu-teal: #00a3ad;
   --wssu-lime: #c4d600;
-  --wssu-coral: #e87722;
-  --wssu-violet: #7b4fbf;
-  --wssu-blue: #0066b3;
   --wssu-black: #09090b;
   --wssu-white: #fafafa;
   --wssu-paper: #f2efe9;
@@ -467,11 +461,9 @@
 @keyframes cta-photo-reveal {
   from {
     opacity: 0;
-    transform: scale(1.05);
   }
   to {
     opacity: 1;
-    transform: scale(1);
   }
 }
 
@@ -487,7 +479,6 @@
 
 .cta-photo {
   opacity: 0;
-  transform: scale(1.05);
 }
 
 .cta-in-view .cta-photo {

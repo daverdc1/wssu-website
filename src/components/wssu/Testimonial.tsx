@@ -29,7 +29,7 @@ const slides = [
   },
   {
     image: testimonialSlides[2],
-    objectPosition: "44% center",
+    objectPosition: "62% 38%",
     quote:
       "I came to WSSU for the business program and left with a network. Internships, mentors, the whole Ramily. That's what made the difference.",
     name: "Sade Owens",

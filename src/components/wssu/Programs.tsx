@@ -8,7 +8,7 @@ import { SubnavArrow } from "./SubnavArrow";
 import { SectionHeaderGrid } from "./SectionHeaderGrid";
 import { programs } from "./photos";
 
-type ProgramAccent = "gold" | "teal" | "lime" | "coral" | "violet";
+type ProgramAccent = "gold" | "teal" | "lime" | "red";
 
 type Program = {
   id: string;
@@ -41,15 +41,9 @@ const programAccentStyles: Record<
     activeText: "text-wssu-black",
     activeArrow: "text-wssu-black",
   },
-  coral: {
-    indicator: "bg-wssu-coral",
-    wipe: "bg-wssu-coral",
-    activeText: "text-wssu-white",
-    activeArrow: "text-wssu-white",
-  },
-  violet: {
-    indicator: "bg-wssu-violet",
-    wipe: "bg-wssu-violet",
+  red: {
+    indicator: "bg-wssu-red",
+    wipe: "bg-wssu-red",
     activeText: "text-wssu-white",
     activeArrow: "text-wssu-white",
   },
@@ -86,7 +80,7 @@ const PROGRAMS: Program[] = [
     heading: "Education",
     body: "Become the teacher you wish you'd had. WSSU prepares educators to lead classrooms with cultural responsiveness, evidence-based instruction, and the conviction that every student deserves a champion. Field placements start early and never let up.",
     image: programs.education,
-    accent: "coral",
+    accent: "red",
   },
   {
     id: "justice",
@@ -94,7 +88,23 @@ const PROGRAMS: Program[] = [
     heading: "Social Justice & Advocacy",
     body: "Study power, then change it. Our social justice programs combine the analytical tools of the social sciences with on-the-ground advocacy training—and a guaranteed law school pathway with Wake Forest University for qualified students.",
     image: programs.justice,
-    accent: "violet",
+    accent: "gold",
+  },
+  {
+    id: "health",
+    title: "Health & Fitness",
+    heading: "Health & Fitness",
+    body: "Train for careers that keep communities well. WSSU's health and fitness programs blend clinical knowledge, movement science, and real-world practice—preparing you to work in athletics, wellness, rehabilitation, and the growing field of preventive care.",
+    image: programs.health,
+    accent: "teal",
+  },
+  {
+    id: "stem",
+    title: "Science, Technology, Engineering, and Mathematics",
+    heading: "Science, Technology, Engineering & Mathematics",
+    body: "Ask better questions—and build what's next. WSSU's STEM programs connect rigorous science and research with technology, engineering design, data, and mathematics—preparing you for graduate study, healthcare pathways, and the industries reshaping North Carolina, from advanced manufacturing and cybersecurity to software, analytics, and infrastructure.",
+    image: programs.stem,
+    accent: "lime",
   },
 ];
 
@@ -296,7 +306,7 @@ export function Programs() {
                   direction === 1 ? "program-badge-next" : "program-badge-prev",
                 )}
               >
-                {String(activeIndex + 1).padStart(2, "0")} / 05
+                {String(activeIndex + 1).padStart(2, "0")} / {String(PROGRAMS.length).padStart(2, "0")}
               </div>
             </div>
 
