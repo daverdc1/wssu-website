@@ -211,12 +211,22 @@ export function WhyWSSU() {
       },
     );
 
-    const onScroll = () => updateFillProgress();
+    let ticking = false;
+
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+
+      requestAnimationFrame(() => {
+        updateFillProgress();
+        ticking = false;
+      });
+    };
 
     for (const article of articles) observer.observe(article);
     updateFillProgress();
     window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
+    window.addEventListener("resize", onScroll, { passive: true });
 
     return () => {
       observer.disconnect();

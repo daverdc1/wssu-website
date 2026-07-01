@@ -118,9 +118,8 @@
   }
 
   html {
-    scroll-behavior: smooth;
     overflow-x: clip;
-    background-color: var(--wssu-black);
+    background-color: var(--background);
     height: 100%;
     height: -webkit-fill-available;
   }
@@ -435,7 +434,7 @@ html[data-ios-viewport="true"] .hero-viewport-fill {
 }
 
 .hero-video-overlay {
-  background: linear-gradient(73deg, rgba(0, 0, 0, 0.4) 0%, #000 50.01%);
+  background: linear-gradient(73deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0) 50.01%);
 }
 
 @supports (color: color(display-p3 0 0 0)) {

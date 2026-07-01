@@ -1,4 +1,4 @@
-/** Sync hero height with iOS Safari's visible viewport (no overlay fillers). */
+/** Sync iOS Safari visual viewport height for stable full-screen sections. */
 export const IOS_VIEWPORT_SCRIPT = `(function () {
   var root = document.documentElement;
   var coarse = window.matchMedia("(pointer: coarse)").matches;

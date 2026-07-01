@@ -16,14 +16,32 @@ export function Hero() {
   useEffect(() => {
     const fadeDistance = 88;
     const hideControlsAfterViewportRatio = 0.55;
+    let ticking = false;
+    let lastOpacity = 1;
+    let lastShowControls = true;
 
     const onScroll = () => {
-      const progress = Math.min(1, window.scrollY / fadeDistance);
-      const eased = 1 - (1 - progress) ** 3;
-      setScrollHintOpacity(1 - eased);
+      if (ticking) return;
+      ticking = true;
 
-      const vh = window.innerHeight;
-      setShowVideoControls(window.scrollY < vh * hideControlsAfterViewportRatio);
+      requestAnimationFrame(() => {
+        const progress = Math.min(1, window.scrollY / fadeDistance);
+        const eased = 1 - (1 - progress) ** 3;
+        const opacity = 1 - eased;
+        const showControls = window.scrollY < window.innerHeight * hideControlsAfterViewportRatio;
+
+        if (Math.abs(opacity - lastOpacity) > 0.01) {
+          lastOpacity = opacity;
+          setScrollHintOpacity(opacity);
+        }
+
+        if (showControls !== lastShowControls) {
+          lastShowControls = showControls;
+          setShowVideoControls(showControls);
+        }
+
+        ticking = false;
+      });
     };
 
     onScroll();
