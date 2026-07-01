@@ -7,7 +7,6 @@ import {
   useRef,
   useState,
   type ReactNode,
-  type RefObject,
 } from "react";
 import { Pause, Play } from "lucide-react";
 import { hero } from "@/components/wssu/photos";
@@ -17,6 +16,52 @@ import { cn } from "@/lib/utils";
 const HERO_VIDEO_SRC = "/video/hero.mp4";
 const HERO_VIDEO_START_SECONDS = 9.25;
 const HERO_VIDEO_END_SECONDS = 55;
+
+function isIOS() {
+  return (
+    /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)
+  );
+}
+
+function prepareVideoElement(video: HTMLVideoElement) {
+  video.muted = true;
+  video.defaultMuted = true;
+  video.playsInline = true;
+  video.setAttribute("playsinline", "");
+  video.setAttribute("webkit-playsinline", "");
+}
+
+function seekToLoopStart(video: HTMLVideoElement) {
+  if (
+    video.currentTime < HERO_VIDEO_START_SECONDS - 0.5 ||
+    video.currentTime >= HERO_VIDEO_END_SECONDS
+  ) {
+    video.currentTime = HERO_VIDEO_START_SECONDS;
+  }
+}
+
+function attemptPlay(video: HTMLVideoElement) {
+  prepareVideoElement(video);
+  const playPromise = video.play();
+  if (playPromise) {
+    playPromise.catch(() => {});
+  }
+}
+
+function startHeroPlayback(video: HTMLVideoElement) {
+  prepareVideoElement(video);
+
+  if (isIOS()) {
+    // iOS often rejects play() after a seek; start playback first, then seek.
+    attemptPlay(video);
+    window.setTimeout(() => seekToLoopStart(video), 0);
+    return;
+  }
+
+  seekToLoopStart(video);
+  attemptPlay(video);
+}
 
 function usePrefersReducedMotion() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
@@ -34,7 +79,7 @@ function usePrefersReducedMotion() {
 }
 
 type HeroVideoContextValue = {
-  videoRef: RefObject<HTMLVideoElement | null>;
+  setVideoRef: (node: HTMLVideoElement | null) => void;
   showVideo: boolean;
   userPaused: boolean;
   playerReady: boolean;
@@ -52,22 +97,21 @@ function useHeroVideo() {
   return context;
 }
 
-function startHeroPlayback(video: HTMLVideoElement) {
-  if (video.currentTime < HERO_VIDEO_START_SECONDS - 0.5 || video.currentTime >= HERO_VIDEO_END_SECONDS) {
-    video.currentTime = HERO_VIDEO_START_SECONDS;
-  }
-  void video.play();
-}
-
 export function HeroVideoProvider({ children }: { children: ReactNode }) {
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
   const userPausedRef = useRef(false);
   const prefersReducedMotion = usePrefersReducedMotion();
   const [videoEnabled, setVideoEnabled] = useState(true);
   const [userPaused, setUserPaused] = useState(false);
   const [playerReady, setPlayerReady] = useState(false);
+  const [videoEl, setVideoEl] = useState<HTMLVideoElement | null>(null);
 
   const showVideo = videoEnabled && !prefersReducedMotion;
+
+  const setVideoRef = useCallback((node: HTMLVideoElement | null) => {
+    videoRef.current = node;
+    setVideoEl(node);
+  }, []);
 
   useEffect(() => {
     if (prefersReducedMotion) {
@@ -77,11 +121,15 @@ export function HeroVideoProvider({ children }: { children: ReactNode }) {
   }, [prefersReducedMotion]);
 
   useEffect(() => {
-    const video = videoRef.current;
+    const video = videoEl;
     if (!video || !showVideo) return;
 
+    prepareVideoElement(video);
+
+    const markReady = () => setPlayerReady(true);
+
     const onCanPlay = () => {
-      setPlayerReady(true);
+      markReady();
       if (!userPausedRef.current) {
         startHeroPlayback(video);
       }
@@ -99,26 +147,49 @@ export function HeroVideoProvider({ children }: { children: ReactNode }) {
       if (video.paused) startHeroPlayback(video);
     };
 
+    video.addEventListener("loadedmetadata", markReady);
     video.addEventListener("canplay", onCanPlay);
     video.addEventListener("timeupdate", onTimeUpdate);
     document.addEventListener("visibilitychange", onVisible);
 
-    if (video.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA) {
-      onCanPlay();
+    if (video.readyState >= HTMLMediaElement.HAVE_METADATA) {
+      markReady();
+    }
+    if (video.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA && !userPausedRef.current) {
+      startHeroPlayback(video);
     }
 
+    const observer =
+      typeof IntersectionObserver !== "undefined"
+        ? new IntersectionObserver(
+            ([entry]) => {
+              if (!entry?.isIntersecting || userPausedRef.current) return;
+              if (video.readyState < HTMLMediaElement.HAVE_METADATA) {
+                video.load();
+              }
+              if (video.paused) startHeroPlayback(video);
+            },
+            { threshold: 0.15 },
+          )
+        : null;
+
+    const hero = document.getElementById("hero");
+    if (hero) observer?.observe(hero);
+
     return () => {
+      video.removeEventListener("loadedmetadata", markReady);
       video.removeEventListener("canplay", onCanPlay);
       video.removeEventListener("timeupdate", onTimeUpdate);
       document.removeEventListener("visibilitychange", onVisible);
+      observer?.disconnect();
       video.pause();
       setPlayerReady(false);
     };
-  }, [showVideo]);
+  }, [showVideo, videoEl]);
 
   const togglePlayback = useCallback(() => {
     const video = videoRef.current;
-    if (!video || !playerReady) return;
+    if (!video) return;
 
     if (!userPausedRef.current) {
       userPausedRef.current = true;
@@ -129,8 +200,13 @@ export function HeroVideoProvider({ children }: { children: ReactNode }) {
 
     userPausedRef.current = false;
     setUserPaused(false);
-    void video.play();
-  }, [playerReady]);
+
+    if (video.readyState < HTMLMediaElement.HAVE_METADATA) {
+      video.load();
+    }
+
+    startHeroPlayback(video);
+  }, []);
 
   const enableVideo = useCallback(() => {
     setVideoEnabled(true);
@@ -138,31 +214,32 @@ export function HeroVideoProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo(
     () => ({
-      videoRef,
+      setVideoRef,
       showVideo,
       userPaused,
       playerReady,
       togglePlayback,
       enableVideo,
     }),
-    [enableVideo, playerReady, showVideo, togglePlayback, userPaused],
+    [enableVideo, playerReady, setVideoRef, showVideo, togglePlayback, userPaused],
   );
 
   return <HeroVideoContext.Provider value={value}>{children}</HeroVideoContext.Provider>;
 }
 
 export function HeroVideoLayer() {
-  const { videoRef, showVideo } = useHeroVideo();
+  const { setVideoRef, showVideo } = useHeroVideo();
 
   return (
     <>
       {showVideo ? (
         <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
           <video
-            ref={videoRef}
+            ref={setVideoRef}
             src={HERO_VIDEO_SRC}
             className="size-full object-cover object-center"
             muted
+            defaultMuted
             playsInline
             autoPlay
             preload="auto"

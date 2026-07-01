@@ -31,7 +31,7 @@ export const photos = [
   photoPath("wssu-8"),
 ] as const satisfies readonly PhotoPath[];
 
-export const hero = photos[0];
+export const hero = photoPath("hero");
 
 export const programs = {
   arts: photoPath("program-arts"),
