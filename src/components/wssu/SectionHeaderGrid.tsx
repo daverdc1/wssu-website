@@ -31,7 +31,12 @@ export function SectionLabelMarker({
 }) {
   return (
     <div className={cn("section-label-marker", className)} style={style}>
-      <span className={cn("font-mono text-[10px] uppercase tracking-[0.35em]", labelText[tone])}>
+      <span
+        className={cn(
+          "whitespace-nowrap font-mono text-[10px] uppercase tracking-[0.35em]",
+          labelText[tone],
+        )}
+      >
         {label}
       </span>
     </div>
@@ -84,8 +89,8 @@ export function SectionHeaderLabelRow({
   const splitClasses =
     split === "wide"
       ? {
-          spacer: "hidden lg:block lg:col-span-5",
-          label: "section-label-marker--end lg:col-span-7 lg:col-start-6",
+          spacer: "hidden md:block md:col-span-5",
+          label: "section-label-marker--end md:col-span-7 md:col-start-6",
         }
       : {
           spacer: "hidden md:block md:col-span-7",
@@ -98,7 +103,7 @@ export function SectionHeaderLabelRow({
       <div
         className={cn(
           "section-header-label-row__grid grid grid-cols-1 md:grid-cols-12",
-          split === "wide" ? "pt-2 lg:pt-2.5" : "pt-2 md:pt-2.5",
+          "pt-2 md:pt-2.5",
         )}
       >
         <div className={splitClasses.spacer} aria-hidden="true" />

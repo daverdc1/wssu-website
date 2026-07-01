@@ -42,13 +42,13 @@ export function Hero() {
   const showScrollHint = heroInView && scrollHintOpacity > 0.05;
 
   return (
-    <section id="hero" className="relative -mt-20 bg-wssu-black md:-mt-[5.5rem]">
-      <div className="absolute inset-0 min-h-[100svh] overflow-hidden">
+    <section id="hero" className="hero-viewport relative -mt-20 bg-wssu-black md:-mt-[5.5rem]">
+      <div className="hero-viewport-fill absolute inset-0 overflow-hidden">
         <HeroVideoLayer />
         <div className="absolute inset-x-0 top-0 h-px bg-wssu-red/60" />
       </div>
 
-      <div className="relative isolate z-10 flex min-h-[100svh] flex-col">
+      <div className="hero-viewport-fill relative isolate z-10 flex flex-col">
         <div className="pointer-events-none absolute right-6 top-24 z-40 flex flex-col items-end gap-4 md:right-10 md:top-28 md:gap-5">
           <span className="hidden font-mono text-[10px] uppercase tracking-[0.3em] text-wssu-white/60 md:block">
             (00) — Winston-Salem · NC
@@ -65,13 +65,13 @@ export function Hero() {
 
           <div className="w-full shrink-0 pb-5 pl-5 pr-3 pt-4 sm:pl-6 sm:pr-4 sm:pt-6 md:pb-6 md:pl-10 md:pr-5 md:pt-8 lg:pl-12 lg:pt-10">
             <h1 className="font-display flex flex-col uppercase tracking-[-0.04em] text-wssu-white">
-              <span className="cta-headline-light mb-2 text-3xl leading-[0.95] tracking-[-0.04em] md:mb-3 md:text-5xl">
+              <span className="cta-headline-light mb-2 text-[2rem] leading-[0.95] tracking-[-0.04em] md:mb-3 md:text-[3rem] lg:text-[3.5rem] xl:text-[4rem]">
                 Future Focused Programs.
               </span>
-              <span className="cta-headline-bold font-extrabold mt-0 text-[clamp(3.25rem,10.5vw,9.5rem)] leading-[0.85] md:mt-1">
+              <span className="cta-headline-bold font-extrabold mt-0 text-[4.25rem] leading-[0.85] md:mt-1 md:text-[6rem] lg:text-[7.5rem] xl:text-[9rem]">
                 Real-World
               </span>
-              <span className="cta-headline-bold font-extrabold relative inline-block w-fit text-[clamp(3.25rem,10.5vw,9.5rem)] leading-[0.9]">
+              <span className="cta-headline-bold font-extrabold relative inline-block w-fit text-[4.25rem] leading-[0.9] md:text-[6rem] lg:text-[7.5rem] xl:text-[9rem]">
                 Results.
                 <MarkerCircle rotate={-3} size="hero" strokeWidth={4} />
               </span>

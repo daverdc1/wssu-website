@@ -16,8 +16,7 @@ import { cn } from "@/lib/utils";
 const HERO_VIDEO_DESKTOP_SRC = "/video/hero.mp4";
 const HERO_VIDEO_MOBILE_SRC = "/video/hero-mobile.mp4";
 const HERO_POSTER_SRC = photoDefaultSrc(hero);
-const HERO_VIDEO_START_SECONDS = 9.25;
-const HERO_VIDEO_END_SECONDS = 55;
+const MAX_AUTOPLAY_ATTEMPTS = 6;
 
 function getHeroVideoSrc() {
   if (typeof window === "undefined") return HERO_VIDEO_DESKTOP_SRC;
@@ -33,19 +32,6 @@ function prepareVideoElement(video: HTMLVideoElement) {
   video.setAttribute("playsinline", "");
   video.setAttribute("webkit-playsinline", "");
   video.setAttribute("disablepictureinpicture", "");
-}
-
-function seekToLoopStart(video: HTMLVideoElement) {
-  if (
-    video.currentTime < HERO_VIDEO_START_SECONDS - 0.5 ||
-    video.currentTime >= HERO_VIDEO_END_SECONDS
-  ) {
-    try {
-      video.currentTime = HERO_VIDEO_START_SECONDS;
-    } catch {
-      // iOS can throw if metadata is not ready yet.
-    }
-  }
 }
 
 function usePrefersReducedMotion() {
@@ -86,18 +72,15 @@ export function HeroVideoProvider({ children }: { children: ReactNode }) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const userPausedRef = useRef(false);
   const hasRenderedFrameRef = useRef(false);
+  const autoplayAttemptsRef = useRef(0);
+  const autoplayRetryTimerRef = useRef<number | null>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
   const [videoEnabled, setVideoEnabled] = useState(true);
   const [userPaused, setUserPaused] = useState(false);
   const [hasRenderedFrame, setHasRenderedFrame] = useState(false);
   const [videoEl, setVideoEl] = useState<HTMLVideoElement | null>(null);
-  const [videoSrc, setVideoSrc] = useState(HERO_VIDEO_DESKTOP_SRC);
 
   const showVideo = videoEnabled && !prefersReducedMotion;
-
-  useEffect(() => {
-    setVideoSrc(getHeroVideoSrc());
-  }, []);
 
   const setVideoRef = useCallback((node: HTMLVideoElement | null) => {
     videoRef.current = node;
@@ -115,45 +98,55 @@ export function HeroVideoProvider({ children }: { children: ReactNode }) {
     setUserPaused(true);
   }, []);
 
-  const playFromGesture = useCallback((video: HTMLVideoElement) => {
-    prepareVideoElement(video);
-
-    if (video.readyState < HTMLMediaElement.HAVE_METADATA) {
-      video.load();
+  const clearAutoplayRetry = useCallback(() => {
+    if (autoplayRetryTimerRef.current !== null) {
+      window.clearTimeout(autoplayRetryTimerRef.current);
+      autoplayRetryTimerRef.current = null;
     }
+  }, []);
 
-    const playPromise = video.play();
-    if (!playPromise) return;
-
-    playPromise
-      .then(() => {
-        seekToLoopStart(video);
-        markRenderedFrame();
-      })
-      .catch(() => {
-        markAutoplayBlocked();
-      });
-  }, [markAutoplayBlocked, markRenderedFrame]);
-
-  const attemptAutoplay = useCallback(
-    (video: HTMLVideoElement) => {
-      if (userPausedRef.current) return;
-
+  const playVideo = useCallback(
+    (video: HTMLVideoElement, { fromUserGesture = false } = {}) => {
       prepareVideoElement(video);
-      const playPromise = video.play();
 
+      const playPromise = video.play();
       if (!playPromise) return;
 
       playPromise
         .then(() => {
-          seekToLoopStart(video);
+          autoplayAttemptsRef.current = 0;
+          clearAutoplayRetry();
           markRenderedFrame();
         })
         .catch(() => {
-          markAutoplayBlocked();
+          if (fromUserGesture || userPausedRef.current) {
+            markAutoplayBlocked();
+            return;
+          }
+
+          autoplayAttemptsRef.current += 1;
+          if (autoplayAttemptsRef.current >= MAX_AUTOPLAY_ATTEMPTS) {
+            markAutoplayBlocked();
+            return;
+          }
+
+          clearAutoplayRetry();
+          autoplayRetryTimerRef.current = window.setTimeout(() => {
+            if (!userPausedRef.current && video.paused) {
+              playVideo(video);
+            }
+          }, 250 * autoplayAttemptsRef.current);
         });
     },
-    [markAutoplayBlocked, markRenderedFrame],
+    [clearAutoplayRetry, markAutoplayBlocked, markRenderedFrame],
+  );
+
+  const attemptAutoplay = useCallback(
+    (video: HTMLVideoElement) => {
+      if (userPausedRef.current || !video.paused) return;
+      playVideo(video);
+    },
+    [playVideo],
   );
 
   useEffect(() => {
@@ -168,15 +161,10 @@ export function HeroVideoProvider({ children }: { children: ReactNode }) {
     if (!video || !showVideo) return;
 
     prepareVideoElement(video);
-    video.src = videoSrc;
-    video.load();
+    autoplayAttemptsRef.current = 0;
 
-    const onLoadedMetadata = () => {
-      seekToLoopStart(video);
-    };
-
-    const onCanPlay = () => {
-      if (!userPausedRef.current) {
+    const tryAutoplay = () => {
+      if (!userPausedRef.current && video.paused) {
         attemptAutoplay(video);
       }
     };
@@ -185,22 +173,15 @@ export function HeroVideoProvider({ children }: { children: ReactNode }) {
       markRenderedFrame();
     };
 
-    const onTimeUpdate = () => {
-      if (userPausedRef.current) return;
-      if (video.currentTime >= HERO_VIDEO_END_SECONDS - 0.05) {
-        video.currentTime = HERO_VIDEO_START_SECONDS;
-      }
-    };
-
     const onVisible = () => {
       if (document.visibilityState !== "visible" || userPausedRef.current) return;
-      if (video.paused) attemptAutoplay(video);
+      tryAutoplay();
     };
 
-    video.addEventListener("loadedmetadata", onLoadedMetadata);
-    video.addEventListener("canplay", onCanPlay);
+    video.addEventListener("loadeddata", tryAutoplay);
+    video.addEventListener("canplay", tryAutoplay);
+    video.addEventListener("canplaythrough", tryAutoplay);
     video.addEventListener("playing", onPlaying);
-    video.addEventListener("timeupdate", onTimeUpdate);
     document.addEventListener("visibilitychange", onVisible);
 
     const observer =
@@ -208,7 +189,7 @@ export function HeroVideoProvider({ children }: { children: ReactNode }) {
         ? new IntersectionObserver(
             ([entry]) => {
               if (!entry?.isIntersecting || userPausedRef.current) return;
-              if (video.paused) attemptAutoplay(video);
+              tryAutoplay();
             },
             { threshold: 0.1 },
           )
@@ -217,15 +198,24 @@ export function HeroVideoProvider({ children }: { children: ReactNode }) {
     const heroSection = document.getElementById("hero");
     if (heroSection) observer?.observe(heroSection);
 
+    tryAutoplay();
+
     return () => {
-      video.removeEventListener("loadedmetadata", onLoadedMetadata);
-      video.removeEventListener("canplay", onCanPlay);
+      clearAutoplayRetry();
+      video.removeEventListener("loadeddata", tryAutoplay);
+      video.removeEventListener("canplay", tryAutoplay);
+      video.removeEventListener("canplaythrough", tryAutoplay);
       video.removeEventListener("playing", onPlaying);
-      video.removeEventListener("timeupdate", onTimeUpdate);
       document.removeEventListener("visibilitychange", onVisible);
       observer?.disconnect();
     };
-  }, [attemptAutoplay, markRenderedFrame, showVideo, videoEl, videoSrc]);
+  }, [
+    attemptAutoplay,
+    clearAutoplayRetry,
+    markRenderedFrame,
+    showVideo,
+    videoEl,
+  ]);
 
   useEffect(() => {
     if (showVideo) return;
@@ -239,14 +229,16 @@ export function HeroVideoProvider({ children }: { children: ReactNode }) {
     if (!userPausedRef.current) {
       userPausedRef.current = true;
       setUserPaused(true);
+      clearAutoplayRetry();
       video.pause();
       return;
     }
 
     userPausedRef.current = false;
     setUserPaused(false);
-    playFromGesture(video);
-  }, [playFromGesture]);
+    autoplayAttemptsRef.current = 0;
+    playVideo(video, { fromUserGesture: true });
+  }, [clearAutoplayRetry, playVideo]);
 
   const enableVideo = useCallback(() => {
     setVideoEnabled(true);
@@ -269,6 +261,11 @@ export function HeroVideoProvider({ children }: { children: ReactNode }) {
 
 export function HeroVideoLayer() {
   const { setVideoRef, showVideo, hasRenderedFrame } = useHeroVideo();
+  const [videoSrc, setVideoSrc] = useState(HERO_VIDEO_DESKTOP_SRC);
+
+  useEffect(() => {
+    setVideoSrc(getHeroVideoSrc());
+  }, []);
 
   return (
     <>
@@ -286,6 +283,7 @@ export function HeroVideoLayer() {
           ) : null}
           <video
             ref={setVideoRef}
+            src={videoSrc}
             className={cn(
               "size-full object-cover object-center",
               hasRenderedFrame ? "opacity-100" : "opacity-0",
@@ -294,6 +292,8 @@ export function HeroVideoLayer() {
             muted
             defaultMuted
             playsInline
+            autoPlay
+            loop
             preload="auto"
             aria-hidden="true"
           />

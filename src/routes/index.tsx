@@ -42,7 +42,7 @@ function HomePage() {
   return (
     <DevSettingsProvider>
       <HeroVideoProvider>
-        <main className="min-h-screen overflow-x-clip bg-wssu-white text-wssu-black">
+        <main className="overflow-x-clip bg-wssu-white text-wssu-black">
           <AnnouncementsBanner />
           <Nav />
           <Hero />

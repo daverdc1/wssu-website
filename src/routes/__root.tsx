@@ -10,11 +10,14 @@ import {
 import type { ReactNode } from "react";
 
 import appCss from "../styles.css?url";
+import { IOS_VIEWPORT_SCRIPT } from "@/lib/ios-viewport";
 import openSansVariableLatinWdth from "@fontsource-variable/open-sans/files/open-sans-latin-wdth-normal.woff2?url";
 import instrumentSansLatin400 from "@fontsource/instrument-sans/files/instrument-sans-latin-400-normal.woff2?url";
 import instrumentSansLatin500 from "@fontsource/instrument-sans/files/instrument-sans-latin-500-normal.woff2?url";
 import instrumentSansLatin600 from "@fontsource/instrument-sans/files/instrument-sans-latin-600-normal.woff2?url";
 import instrumentSansLatin700 from "@fontsource/instrument-sans/files/instrument-sans-latin-700-normal.woff2?url";
+import merriweatherLatin400 from "@fontsource/merriweather/files/merriweather-latin-400-normal.woff2?url";
+import merriweatherLatin400Italic from "@fontsource/merriweather/files/merriweather-latin-400-italic.woff2?url";
 
 function NotFoundComponent() {
   return (
@@ -77,7 +80,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   head: () => ({
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
+      { name: "theme-color", content: "#fafafa" },
       {
         title: "Winston-Salem State University — Future-Focused Programs. Real-World Results.",
       },
@@ -131,6 +135,20 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         crossOrigin: "anonymous",
       },
       {
+        rel: "preload",
+        href: merriweatherLatin400,
+        as: "font",
+        type: "font/woff2",
+        crossOrigin: "anonymous",
+      },
+      {
+        rel: "preload",
+        href: merriweatherLatin400Italic,
+        as: "font",
+        type: "font/woff2",
+        crossOrigin: "anonymous",
+      },
+      {
         rel: "stylesheet",
         href: appCss,
       },
@@ -147,6 +165,7 @@ function RootShell({ children }: { children: ReactNode }) {
     <html lang="en">
       <head>
         <HeadContent />
+        <script dangerouslySetInnerHTML={{ __html: IOS_VIEWPORT_SCRIPT }} />
       </head>
       <body>
         {children}
