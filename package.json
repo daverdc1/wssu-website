@@ -17,7 +17,6 @@
     "@fontsource-variable/open-sans": "^5.2.7",
     "@fontsource/instrument-sans": "^5.2.8",
     "@fontsource/merriweather": "^5.2.11",
-    "@fontsource/permanent-marker": "^5.2.7",
     "@hookform/resolvers": "^5.2.2",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-alert-dialog": "^1.1.15",

@@ -86,14 +86,14 @@ export function Testimonial() {
       </div>
 
       <div className="section-container mt-12 md:mt-16">
-        <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:items-stretch lg:gap-20">
-          <div
-            ref={swipeRef}
-            className={cn(
-              "relative lg:col-span-5",
-              isDragging ? "cursor-grabbing select-none" : "cursor-grab lg:cursor-auto",
-            )}
-          >
+        <div
+          ref={swipeRef}
+          className={cn(
+            "grid grid-cols-1 gap-12 lg:grid-cols-12 lg:items-stretch lg:gap-20",
+            isDragging ? "cursor-grabbing select-none" : "cursor-grab lg:cursor-auto",
+          )}
+        >
+          <div className="relative lg:col-span-5">
             <div className="photo-corner-cut relative aspect-square w-full overflow-hidden bg-wssu-black/5 lg:aspect-[4/5]">
               {slides.map((slide, idx) => (
                 <OptimizedImage

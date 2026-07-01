@@ -191,7 +191,7 @@ export function SiteMenu({ open, onClose }: SiteMenuProps) {
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder="Search the site"
                 className={cn(
-                  "site-menu-search-input w-full border-0 bg-transparent py-4 pl-12 font-sans text-base leading-none text-wssu-black shadow-none outline-none placeholder:font-marker placeholder:text-base placeholder:text-wssu-black/45 md:py-3 md:pl-11 md:text-sm md:placeholder:text-sm",
+                  "site-menu-search-input w-full border-0 bg-transparent py-4 pl-12 font-sans text-base leading-none text-wssu-black shadow-none outline-none placeholder:font-display placeholder:text-base placeholder:text-wssu-black/45 md:py-3 md:pl-11 md:text-sm md:placeholder:text-sm",
                   query.length > 0 ? "pr-10" : "pr-4",
                 )}
               />
@@ -272,7 +272,7 @@ export function SiteMenu({ open, onClose }: SiteMenuProps) {
                       expanded ? "grid-rows-[1fr]" : "grid-rows-[0fr]",
                     )}
                   >
-                    <div className="min-h-0 overflow-x-hidden overflow-y-visible pb-1">
+                    <div className="min-h-0 overflow-hidden pb-1">
                       <ul className="divide-y divide-wssu-black/10 px-4 pb-2 md:px-5">
                         {section.links.map((link) => (
                           <li key={link}>
@@ -303,7 +303,9 @@ export function SiteMenu({ open, onClose }: SiteMenuProps) {
           </div>
 
           <div className="mt-8">
-            <p className="font-marker text-base text-wssu-black/80">Popular Links</p>
+            <p className="text-xs font-semibold uppercase leading-[1.35] tracking-[0.18em] text-wssu-black/75">
+              Popular Links
+            </p>
             <div className="mt-3 flex flex-wrap gap-2">
               {popularLinks.map((link) => (
                 <DemoLink
