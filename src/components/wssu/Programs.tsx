@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { DemoLink } from "./DemoLink";
 import { WipeButton } from "./WipeButton";
 import { OptimizedImage } from "./OptimizedImage";
+import { ProgramImageWipe, useProgramWipeSwapMs } from "./ProgramImageWipe";
 import { SubnavArrow } from "./SubnavArrow";
 import { SectionHeaderGrid } from "./SectionHeaderGrid";
 import { programs } from "./photos";
@@ -111,9 +112,9 @@ const PROGRAMS: Program[] = [
 ];
 
 const CONTENT_DELAYS = ["0.06s", "0.14s", "0.24s"] as const;
-const WIPE_SWAP_MS = 380;
 
 export function Programs() {
+  const wipeSwapMs = useProgramWipeSwapMs();
   const [activeIndex, setActiveIndex] = useState(0);
   const [displayIndex, setDisplayIndex] = useState(0);
   const [transitionId, setTransitionId] = useState(0);
@@ -142,10 +143,10 @@ export function Programs() {
     const swapTimer = window.setTimeout(() => {
       setDisplayIndex(activeIndex);
       setImageReveal(true);
-    }, WIPE_SWAP_MS);
+    }, wipeSwapMs);
 
     return () => window.clearTimeout(swapTimer);
-  }, [activeIndex, displayIndex]);
+  }, [activeIndex, displayIndex, wipeSwapMs]);
 
   useEffect(() => {
     const updateIndicator = () => {
@@ -227,7 +228,7 @@ export function Programs() {
                       onClick={() => selectProgram(i)}
                       aria-current={isActive ? "true" : undefined}
                       className={cn(
-                        "group flex w-full items-center gap-3.5 px-4 py-3 text-left transition-colors duration-300 md:gap-4 md:px-5 md:py-3.5",
+                        "group flex w-full items-center gap-3 px-3 py-2 text-left transition-colors duration-300 md:gap-3.5 md:px-4 md:py-2.5",
                         isActive
                           ? accent.activeText
                           : "text-wssu-black/80 hover:bg-wssu-white/45 hover:text-wssu-black",
@@ -235,7 +236,7 @@ export function Programs() {
                     >
                       <div
                         className={cn(
-                          "relative h-12 w-12 shrink-0 overflow-hidden bg-wssu-black/5 md:h-14 md:w-14",
+                          "relative h-10 w-10 shrink-0 overflow-hidden bg-wssu-black/5 md:h-11 md:w-11",
                           isActive ? "ring-2 ring-wssu-white/70" : "ring-1 ring-wssu-black/10",
                         )}
                       >
@@ -261,7 +262,7 @@ export function Programs() {
                         >
                           ({String(i + 1).padStart(2, "0")})
                         </span>
-                        <span className="mt-1 block font-sans text-base font-bold leading-snug md:text-lg">
+                        <span className="mt-0.5 block font-sans text-sm font-bold leading-snug md:text-base">
                           {p.title}
                         </span>
                       </span>
@@ -288,19 +289,11 @@ export function Programs() {
                   imageReveal && "program-image-reveal",
                 )}
               />
-              <span
-                key={`wipe-${transitionId}`}
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-0 z-10 overflow-hidden"
-              >
-                <span
-                  className={cn(
-                    "program-wipe-layer",
-                    activeAccent.wipe,
-                    direction === 1 ? "program-wipe-next" : "program-wipe-prev",
-                  )}
-                />
-              </span>
+              <ProgramImageWipe
+                transitionId={transitionId}
+                direction={direction}
+                wipeClassName={activeAccent.wipe}
+              />
               <div
                 key={`badge-${active.id}`}
                 className={cn(

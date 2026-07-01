@@ -326,15 +326,15 @@ export function Blog() {
         </div>
       </div>
 
-      <div className="mt-16 w-full">
+      <div className="mt-16 w-full max-w-full overflow-x-clip">
         <div
           ref={scrollRef}
           className={cn(
-            "news-carousel-scroll touch-pan-x overflow-x-auto overscroll-x-contain scroll-smooth snap-x snap-mandatory [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden",
+            "news-carousel-scroll overflow-x-auto overflow-y-hidden scroll-smooth snap-x snap-mandatory [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden",
             isDragging ? "cursor-grabbing select-none" : "cursor-grab",
           )}
         >
-          <div className="section-scroll-inset flex w-max gap-5 pr-[max(1.5rem,calc((100vw-min(100vw,1440px))/2+1.5rem))] md:gap-8 md:pr-0">
+          <div className="section-scroll-inset flex w-max max-w-none gap-5 pr-[max(1.5rem,calc((100svw-min(100svw,1440px))/2+1.5rem))] md:gap-8 md:pr-0">
             {posts.map((post, idx) => (
               <div
                 key={post.title}

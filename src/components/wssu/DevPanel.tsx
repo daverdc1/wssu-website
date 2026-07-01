@@ -18,7 +18,10 @@ function scrollToTop() {
 
 export function DevPanel() {
   const [open, setOpen] = useState(false);
-  const { announcement, updateAnnouncement, resetAnnouncementDismiss } = useDevSettings();
+  const { devModeUnlocked, announcement, updateAnnouncement, resetAnnouncementDismiss } =
+    useDevSettings();
+
+  if (!devModeUnlocked) return null;
 
   const handleAnnouncementChange = (patch: Parameters<typeof updateAnnouncement>[0]) => {
     updateAnnouncement(patch);

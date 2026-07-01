@@ -175,21 +175,25 @@ export function SiteMenu({ open, onClose }: SiteMenuProps) {
                 Search the site
               </label>
               <Search
-                className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-wssu-black/45 transition-colors group-hover/search:text-wssu-red/70 group-focus-within/search:text-wssu-red"
+                className="pointer-events-none absolute left-4 top-1/2 size-[1.125rem] -translate-y-1/2 text-wssu-black/45 transition-colors group-hover/search:text-wssu-red/70 group-focus-within/search:text-wssu-red md:size-4"
                 strokeWidth={2.25}
               />
               <input
                 ref={searchRef}
                 id={searchInputId}
-                type="text"
+                type="search"
                 role="searchbox"
                 enterKeyHint="search"
+                autoComplete="off"
+                autoCorrect="off"
+                spellCheck={false}
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder="Search the site"
-                className={`w-full border-0 bg-transparent py-3 pl-11 font-sans text-sm text-wssu-black shadow-none outline-none placeholder:font-marker placeholder:text-wssu-black/45 ${
-                  query.length > 0 ? "pr-10" : "pr-4"
-                }`}
+                className={cn(
+                  "w-full border-0 bg-transparent py-4 pl-12 font-sans text-base leading-none text-wssu-black shadow-none outline-none placeholder:font-marker placeholder:text-base placeholder:text-wssu-black/45 md:py-3 md:pl-11 md:text-sm md:placeholder:text-sm",
+                  query.length > 0 ? "pr-10" : "pr-4",
+                )}
               />
               {query.length > 0 && (
                 <button
@@ -206,7 +210,7 @@ export function SiteMenu({ open, onClose }: SiteMenuProps) {
               type="submit"
               disabled={!query.trim()}
               aria-label="Submit search"
-              className="flex w-12 shrink-0 items-center justify-center self-stretch bg-wssu-red text-wssu-white transition-colors enabled:hover:bg-wssu-black disabled:cursor-not-allowed disabled:pointer-events-none disabled:bg-transparent disabled:text-transparent"
+              className="flex w-14 shrink-0 items-center justify-center self-stretch bg-wssu-red text-wssu-white transition-colors enabled:hover:bg-wssu-black disabled:cursor-not-allowed disabled:pointer-events-none disabled:bg-transparent disabled:text-transparent md:w-12"
             >
               <ArrowRight className="size-4" strokeWidth={2.5} />
             </button>

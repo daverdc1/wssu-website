@@ -92,7 +92,7 @@ function StatCard({ value, labelLines, accent, accentColor = "gold" }: Stat) {
 
   return (
     <div
-      className="group flex flex-col py-10 md:px-10 md:py-0 md:first:pl-0 md:last:pr-0"
+      className="group flex flex-col py-5 md:px-10 md:py-0 md:first:pl-0 md:last:pr-0"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
@@ -111,7 +111,7 @@ function StatCard({ value, labelLines, accent, accentColor = "gold" }: Stat) {
       </span>
       <p
         className={cn(
-          "mt-3 text-xs font-semibold uppercase leading-[1.35] tracking-[0.18em] text-wssu-white/75 transition-all duration-300",
+          "mt-1 text-xs font-semibold uppercase leading-[1.35] tracking-[0.18em] text-wssu-white/75 transition-all duration-300 md:mt-3",
           hovered && "translate-x-1 text-wssu-white",
         )}
       >
@@ -149,7 +149,7 @@ export function Stats() {
       </div>
 
       <div className="section-container">
-        <div className="mt-20 grid grid-cols-1 divide-y divide-wssu-white/15 md:grid-cols-3 md:divide-x md:divide-y-0">
+        <div className="mt-12 grid grid-cols-1 divide-y divide-wssu-white/15 md:mt-20 md:grid-cols-3 md:divide-x md:divide-y-0">
           {stats.map((stat) => (
             <StatCard key={stat.value} {...stat} />
           ))}

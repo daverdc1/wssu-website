@@ -13,10 +13,14 @@ function isInteractiveSwipeTarget(target: EventTarget | null) {
   );
 }
 
+type AxisLock = "none" | "horizontal" | "vertical";
+
 type SwipeState = {
   active: boolean;
   dragging: boolean;
+  axis: AxisLock;
   startX: number;
+  startY: number;
   pointerId: number;
 };
 
@@ -25,22 +29,41 @@ export function useHorizontalSwipe(
   {
     onSwipePrev,
     onSwipeNext,
+    enabled = true,
   }: {
     onSwipePrev: () => void;
     onSwipeNext: () => void;
+    enabled?: boolean;
   },
 ) {
   const [isDragging, setIsDragging] = useState(false);
   const swipeStateRef = useRef<SwipeState>({
     active: false,
     dragging: false,
+    axis: "none",
     startX: 0,
+    startY: 0,
     pointerId: -1,
   });
 
   useEffect(() => {
+    if (!enabled) return;
+
     const container = containerRef.current;
     if (!container) return;
+
+    const resetSwipe = () => {
+      swipeStateRef.current.active = false;
+      swipeStateRef.current.dragging = false;
+      swipeStateRef.current.axis = "none";
+      setIsDragging(false);
+    };
+
+    const releaseCapture = (event: PointerEvent) => {
+      if (container.hasPointerCapture(event.pointerId)) {
+        container.releasePointerCapture(event.pointerId);
+      }
+    };
 
     const onDragStart = (event: DragEvent) => {
       event.preventDefault();
@@ -50,16 +73,12 @@ export function useHorizontalSwipe(
       if (event.button !== 0) return;
       if (isInteractiveSwipeTarget(event.target)) return;
 
-      if (event.target instanceof HTMLImageElement) {
-        event.preventDefault();
-      }
-
-      container.setPointerCapture(event.pointerId);
-
       swipeStateRef.current = {
         active: true,
         dragging: false,
+        axis: "none",
         startX: event.clientX,
+        startY: event.clientY,
         pointerId: event.pointerId,
       };
     };
@@ -69,35 +88,41 @@ export function useHorizontalSwipe(
       if (!swipe.active || event.pointerId !== swipe.pointerId) return;
 
       const deltaX = event.clientX - swipe.startX;
-      if (!swipe.dragging && Math.abs(deltaX) < DRAG_THRESHOLD_PX) return;
+      const deltaY = event.clientY - swipe.startY;
 
-      if (!swipe.dragging) {
+      if (swipe.axis === "none") {
+        if (Math.abs(deltaX) < DRAG_THRESHOLD_PX && Math.abs(deltaY) < DRAG_THRESHOLD_PX) {
+          return;
+        }
+
+        if (Math.abs(deltaY) > Math.abs(deltaX)) {
+          resetSwipe();
+          return;
+        }
+
+        swipe.axis = "horizontal";
         swipe.dragging = true;
+        container.setPointerCapture(event.pointerId);
         setIsDragging(true);
       }
 
-      if (Math.abs(deltaX) > DRAG_THRESHOLD_PX) {
-        event.preventDefault();
-      }
+      if (swipe.axis !== "horizontal") return;
+
+      event.preventDefault();
     };
 
     const finishSwipe = (event: PointerEvent) => {
       const swipe = swipeStateRef.current;
       if (!swipe.active || event.pointerId !== swipe.pointerId) return;
 
-      if (swipe.dragging) {
+      if (swipe.dragging && swipe.axis === "horizontal") {
         const deltaX = event.clientX - swipe.startX;
         if (deltaX <= -SWIPE_THRESHOLD_PX) onSwipeNext();
         else if (deltaX >= SWIPE_THRESHOLD_PX) onSwipePrev();
       }
 
-      if (container.hasPointerCapture(event.pointerId)) {
-        container.releasePointerCapture(event.pointerId);
-      }
-
-      swipeStateRef.current.active = false;
-      swipeStateRef.current.dragging = false;
-      setIsDragging(false);
+      releaseCapture(event);
+      resetSwipe();
     };
 
     container.addEventListener("dragstart", onDragStart);
@@ -113,7 +138,7 @@ export function useHorizontalSwipe(
       window.removeEventListener("pointerup", finishSwipe);
       window.removeEventListener("pointercancel", finishSwipe);
     };
-  }, [containerRef, onSwipeNext, onSwipePrev]);
+  }, [containerRef, enabled, onSwipeNext, onSwipePrev]);
 
   return { isDragging };
 }

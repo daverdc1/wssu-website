@@ -7,7 +7,7 @@ import { SectionIndicators } from "./SectionIndicators";
 import { SectionHeaderLabelRow } from "./SectionHeaderGrid";
 import { testimonialSlides } from "./photos";
 
-const AUTO_MS = 8000;
+const AUTO_MS = 6000;
 
 const slides = [
   {
@@ -20,8 +20,7 @@ const slides = [
   },
   {
     image: testimonialSlides[1],
-    objectPosition: "38% center",
-    imageScale: 1.08,
+    objectPosition: "center",
     quote:
       "WSSU gave me more than a degree. It gave me a community of educators who believed I could lead a classroom — and the training to actually do it from day one.",
     name: "Marcus Hill, M.Ed.",
@@ -29,7 +28,7 @@ const slides = [
   },
   {
     image: testimonialSlides[2],
-    objectPosition: "62% 38%",
+    objectPosition: "center top",
     quote:
       "I came to WSSU for the business program and left with a network. Internships, mentors, the whole Ramily. That's what made the difference.",
     name: "Sade Owens",
@@ -87,15 +86,15 @@ export function Testimonial() {
       </div>
 
       <div className="section-container mt-12 md:mt-16">
-        <div
-          ref={swipeRef}
-          className={cn(
-            "grid grid-cols-1 gap-12 lg:grid-cols-12 lg:items-stretch lg:gap-20",
-            isDragging ? "cursor-grabbing select-none" : "cursor-grab",
-          )}
-        >
-          <div className="relative lg:col-span-5">
-            <div className="photo-corner-cut relative aspect-[4/5] w-full overflow-hidden bg-wssu-black/5">
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:items-stretch lg:gap-20">
+          <div
+            ref={swipeRef}
+            className={cn(
+              "relative lg:col-span-5",
+              isDragging ? "cursor-grabbing select-none" : "cursor-grab lg:cursor-auto",
+            )}
+          >
+            <div className="photo-corner-cut relative aspect-square w-full overflow-hidden bg-wssu-black/5 lg:aspect-[4/5]">
               {slides.map((slide, idx) => (
                 <OptimizedImage
                   key={slide.image}
@@ -103,12 +102,12 @@ export function Testimonial() {
                   alt={slide.name}
                   sizes="(min-width: 1024px) 36rem, 100vw"
                   style={{
-                    objectPosition: slide.objectPosition,
+                    ["--slide-object-position" as string]: slide.objectPosition,
                     transform: slide.imageScale ? `scale(${slide.imageScale})` : undefined,
                   }}
                   className={cn(
-                    "absolute inset-0 size-full object-cover transition-opacity duration-500 ease-out",
-                    slide.imageScale && "origin-center",
+                    "absolute inset-0 size-full object-cover object-top transition-opacity duration-500 ease-out lg:[object-position:var(--slide-object-position)]",
+                    slide.imageScale && "origin-top lg:origin-center",
                     idx === i ? "opacity-100" : "opacity-0",
                   )}
                 />

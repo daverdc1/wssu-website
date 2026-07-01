@@ -3,11 +3,10 @@ import { cn } from "@/lib/utils";
 import { MarkerCircle } from "./MarkerCircle";
 import { OptimizedImage } from "./OptimizedImage";
 import { SectionHeaderGrid } from "./SectionHeaderGrid";
+import { ProgramImageWipe, useProgramWipeSwapMs } from "./ProgramImageWipe";
 import { whyBelongImage, whyCareerImage, whyImage } from "./photos";
 
 type WhyAccent = "gold" | "teal" | "lime";
-
-const WIPE_SWAP_MS = 380;
 
 const accentStyles: Record<WhyAccent, { wipe: string }> = {
   gold: { wipe: "bg-wssu-gold" },
@@ -64,12 +63,12 @@ function WhyPhotoMobile({ index }: { index: number }) {
   const item = highlights[index];
 
   return (
-    <div className="photo-corner-cut relative mb-8 aspect-[4/5] w-full overflow-hidden bg-wssu-black/5 lg:hidden">
+    <div className="photo-corner-cut relative mb-8 aspect-square w-full overflow-hidden bg-wssu-black/5 lg:hidden">
       <OptimizedImage
         src={item.image}
         alt={item.title}
         sizes="(min-width: 768px) 1600px, 100vw"
-        className="size-full object-cover"
+        className="size-full object-cover object-top"
       />
       <div className="absolute inset-0 ring-1 ring-inset ring-wssu-black/10" />
     </div>
@@ -102,19 +101,11 @@ function WhyPhotoPanel({
         sizes="(min-width: 768px) 1600px, 100vw"
         className={cn("size-full object-cover", imageReveal && "program-image-reveal")}
       />
-      <span
-        key={`wipe-${transitionId}`}
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 z-10 overflow-hidden"
-      >
-        <span
-          className={cn(
-            "program-wipe-layer",
-            accent.wipe,
-            direction === 1 ? "program-wipe-next" : "program-wipe-prev",
-          )}
-        />
-      </span>
+      <ProgramImageWipe
+        transitionId={transitionId}
+        direction={direction}
+        wipeClassName={accent.wipe}
+      />
       <div className="absolute inset-0 z-[1] ring-1 ring-inset ring-wssu-black/10" />
       <div
         key={`badge-${activeIndex}`}
@@ -130,6 +121,7 @@ function WhyPhotoPanel({
 }
 
 export function WhyWSSU() {
+  const wipeSwapMs = useProgramWipeSwapMs();
   const [activeIndex, setActiveIndex] = useState(0);
   const [displayIndex, setDisplayIndex] = useState(0);
   const [direction, setDirection] = useState<1 | -1>(1);
@@ -165,10 +157,10 @@ export function WhyWSSU() {
     const swapTimer = window.setTimeout(() => {
       setDisplayIndex(activeIndex);
       setImageReveal(true);
-    }, WIPE_SWAP_MS);
+    }, wipeSwapMs);
 
     return () => window.clearTimeout(swapTimer);
-  }, [activeIndex, displayIndex]);
+  }, [activeIndex, displayIndex, wipeSwapMs]);
 
   useEffect(() => {
     const articles = articleRefs.current.filter((el): el is HTMLElement => el != null);

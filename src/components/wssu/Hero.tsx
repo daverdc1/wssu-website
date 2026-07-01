@@ -50,7 +50,7 @@ export function Hero() {
 
       <div className="relative isolate z-10 flex min-h-[100svh] flex-col">
         <div className="pointer-events-none absolute right-6 top-24 z-40 flex flex-col items-end gap-4 md:right-10 md:top-28 md:gap-5">
-          <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-wssu-white/60">
+          <span className="hidden font-mono text-[10px] uppercase tracking-[0.3em] text-wssu-white/60 md:block">
             (00) — Winston-Salem · NC
           </span>
           <HeroVideoControls />
@@ -58,14 +58,14 @@ export function Hero() {
 
         <div className="relative z-30 flex min-h-0 flex-1 flex-col">
           <div
-            className="pointer-events-none shrink-0 h-[calc(5rem+2.5rem)] md:h-[calc(5.5rem+3rem)] lg:h-[calc(5.5rem+3.5rem)]"
+            className="pointer-events-none shrink-0 h-[calc(5rem+10rem)] md:h-[calc(5.5rem+8rem)] lg:h-[calc(5.5rem+10rem)]"
             aria-hidden="true"
           />
-          <div className="min-h-6 flex-1 shrink md:min-h-8" aria-hidden="true" />
+          <div className="min-h-32 flex-1 shrink sm:min-h-36 md:min-h-24 lg:min-h-32" aria-hidden="true" />
 
-          <div className="w-full shrink-0 pb-5 pl-5 pr-3 sm:pl-6 sm:pr-4 md:pb-6 md:pl-10 md:pr-5 lg:pl-12">
+          <div className="w-full shrink-0 pb-5 pl-5 pr-3 pt-8 sm:pl-6 sm:pr-4 sm:pt-10 md:pb-6 md:pl-10 md:pr-5 md:pt-8 lg:pl-12 lg:pt-10">
             <h1 className="font-display flex flex-col uppercase tracking-[-0.04em] text-wssu-white">
-              <span className="cta-headline-light mb-2 text-5xl leading-[0.95] tracking-[-0.04em] md:mb-3 md:text-7xl">
+              <span className="cta-headline-light mb-2 text-3xl leading-[0.95] tracking-[-0.04em] md:mb-3 md:text-5xl">
                 Future Focused Programs.
               </span>
               <span className="cta-headline-bold font-extrabold mt-0 text-[clamp(3.25rem,10.5vw,9.5rem)] leading-[0.85] md:mt-1">
@@ -102,15 +102,17 @@ export function Hero() {
 
         {showScrollHint ? (
           <div
-            className="pointer-events-none fixed bottom-8 left-1/2 z-50 -translate-x-1/2 transition-[opacity,transform] duration-300 ease-out"
-            style={{
-              opacity: scrollHintOpacity,
-              transform: `translate(-50%, ${(1 - scrollHintOpacity) * 10}px)`,
-            }}
+            className="pointer-events-none fixed inset-x-0 bottom-8 z-50 hidden justify-center transition-opacity duration-300 ease-out md:flex"
+            style={{ opacity: scrollHintOpacity }}
             aria-hidden={!showScrollHint}
           >
-            <div className="hero-scroll-indicator flex flex-col items-center gap-1">
-              <span className="font-mono text-[9px] uppercase tracking-[0.38em] text-wssu-white/70">
+            <div
+              className="hero-scroll-indicator flex flex-col items-center gap-1 transition-transform duration-300 ease-out"
+              style={{
+                transform: `translateY(${(1 - scrollHintOpacity) * 10}px)`,
+              }}
+            >
+              <span className="pl-[0.38em] font-mono text-[9px] uppercase tracking-[0.38em] text-wssu-white/70">
                 Scroll
               </span>
               <span className="relative flex h-6 w-px items-start justify-center bg-wssu-white/30">

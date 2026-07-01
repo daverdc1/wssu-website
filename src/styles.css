@@ -169,6 +169,7 @@
 
   html {
     scroll-behavior: smooth;
+    overflow-x: clip;
   }
 
   body {
@@ -178,6 +179,7 @@
     letter-spacing: -0.015em;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+    overflow-x: clip;
   }
 
   .font-display {
@@ -269,19 +271,32 @@
   padding-inline: var(--section-pad);
 }
 
+@media (max-width: 767px) {
+  section:has(.section-header-label-row) {
+    padding-top: 4rem;
+  }
+}
+
+[data-site-nav] .section-header-container {
+  --section-pad: 0.75rem;
+}
+
 .section-scroll-inset {
   --section-pad: 1.5rem;
   padding-inline: max(
     var(--section-pad),
-    calc((100vw - min(100vw, 1440px)) / 2 + var(--section-pad))
+    calc((100svw - min(100svw, 1440px)) / 2 + var(--section-pad))
   );
 }
 
 .news-carousel-scroll {
   --section-pad: 1.5rem;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  max-width: 100%;
   scroll-padding-inline: max(
     var(--section-pad),
-    calc((100vw - min(100vw, 1440px)) / 2 + var(--section-pad))
+    calc((100svw - min(100svw, 1440px)) / 2 + var(--section-pad))
   );
 }
 
@@ -298,6 +313,10 @@
   }
 
   .section-header-container {
+    --section-pad: 2.5rem;
+  }
+
+  [data-site-nav] .section-header-container {
     --section-pad: 2.5rem;
   }
 }
@@ -435,22 +454,13 @@
   }
 }
 
-.hero-video-frame {
-  /* Slightly overscaled cover — fills the hero without stretching 1080p across 480vw. */
-  width: max(112vw, 199.1111111111vh);
-  height: max(112vh, 63vw);
-  top: 50%;
-  left: 40%;
-  transform: translate(-50%, -50%) translateZ(0);
-}
-
-.hero-video-controls-mask {
-  background: radial-gradient(
-    circle at 32% 50%,
-    rgba(9, 9, 11, 0.62) 0%,
-    rgba(9, 9, 11, 0.28) 30%,
-    rgba(9, 9, 11, 0.06) 55%,
-    transparent 78%
+.hero-video-bottom-left-diagonal-mask {
+  background: linear-gradient(
+    to top right,
+    rgba(9, 9, 11, 0.78) 0%,
+    rgba(9, 9, 11, 0.48) 30%,
+    rgba(9, 9, 11, 0.16) 55%,
+    transparent 75%
   );
 }
 
@@ -775,6 +785,8 @@
   transform: translate(-50%, -50%) rotate(28deg);
   transform-origin: center center;
   opacity: 0;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
 }
 
 .program-wipe-next {
@@ -823,9 +835,15 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .program-image-reveal,
+  .program-wipe-layer,
   .program-wipe-next,
-  .program-wipe-prev,
+  .program-wipe-prev {
+    animation: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+  }
+
+  .program-image-reveal,
   .program-badge-next,
   .program-badge-prev,
   .program-content-next .program-content-child,

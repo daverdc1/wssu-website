@@ -12,11 +12,15 @@ function isInteractiveDragTarget(target: EventTarget | null) {
   );
 }
 
+type AxisLock = "none" | "horizontal" | "vertical";
+
 type DragState = {
   active: boolean;
   dragging: boolean;
+  axis: AxisLock;
   suppressClick: boolean;
   startX: number;
+  startY: number;
   startScrollLeft: number;
   pointerId: number;
 };
@@ -24,18 +28,23 @@ type DragState = {
 export function useHorizontalDragScroll(
   containerRef: RefObject<HTMLElement | null>,
   onDragEnd?: () => void,
+  { enabled = true }: { enabled?: boolean } = {},
 ) {
   const [isDragging, setIsDragging] = useState(false);
   const dragStateRef = useRef<DragState>({
     active: false,
     dragging: false,
+    axis: "none",
     suppressClick: false,
     startX: 0,
+    startY: 0,
     startScrollLeft: 0,
     pointerId: -1,
   });
 
   useEffect(() => {
+    if (!enabled) return;
+
     const container = containerRef.current;
     if (!container) return;
 
@@ -44,25 +53,35 @@ export function useHorizontalDragScroll(
       container.style.scrollBehavior = "";
     };
 
+    const resetDrag = () => {
+      dragStateRef.current.active = false;
+      dragStateRef.current.dragging = false;
+      dragStateRef.current.axis = "none";
+      setIsDragging(false);
+    };
+
+    const releaseCapture = (event: PointerEvent) => {
+      if (container.hasPointerCapture(event.pointerId)) {
+        container.releasePointerCapture(event.pointerId);
+      }
+    };
+
     const onDragStart = (event: DragEvent) => {
       event.preventDefault();
     };
 
     const onPointerDown = (event: PointerEvent) => {
       if (event.button !== 0) return;
+      if (event.pointerType !== "mouse") return;
       if (isInteractiveDragTarget(event.target)) return;
-
-      if (event.target instanceof HTMLImageElement) {
-        event.preventDefault();
-      }
-
-      container.setPointerCapture(event.pointerId);
 
       dragStateRef.current = {
         active: true,
         dragging: false,
+        axis: "none",
         suppressClick: false,
         startX: event.clientX,
+        startY: event.clientY,
         startScrollLeft: container.scrollLeft,
         pointerId: event.pointerId,
       };
@@ -73,14 +92,27 @@ export function useHorizontalDragScroll(
       if (!drag.active || event.pointerId !== drag.pointerId) return;
 
       const deltaX = event.clientX - drag.startX;
-      if (!drag.dragging && Math.abs(deltaX) < DRAG_THRESHOLD_PX) return;
+      const deltaY = event.clientY - drag.startY;
 
-      if (!drag.dragging) {
+      if (drag.axis === "none") {
+        if (Math.abs(deltaX) < DRAG_THRESHOLD_PX && Math.abs(deltaY) < DRAG_THRESHOLD_PX) {
+          return;
+        }
+
+        if (Math.abs(deltaY) > Math.abs(deltaX)) {
+          resetDrag();
+          return;
+        }
+
+        drag.axis = "horizontal";
         drag.dragging = true;
+        container.setPointerCapture(event.pointerId);
         setIsDragging(true);
         container.style.scrollSnapType = "none";
         container.style.scrollBehavior = "auto";
       }
+
+      if (drag.axis !== "horizontal") return;
 
       event.preventDefault();
       container.scrollLeft = drag.startScrollLeft - deltaX;
@@ -90,19 +122,14 @@ export function useHorizontalDragScroll(
       const drag = dragStateRef.current;
       if (!drag.active || event.pointerId !== drag.pointerId) return;
 
-      if (drag.dragging) {
+      if (drag.dragging && drag.axis === "horizontal") {
         drag.suppressClick = true;
         resetDragStyles();
-        setIsDragging(false);
         onDragEnd?.();
       }
 
-      if (container.hasPointerCapture(event.pointerId)) {
-        container.releasePointerCapture(event.pointerId);
-      }
-
-      dragStateRef.current.active = false;
-      dragStateRef.current.dragging = false;
+      releaseCapture(event);
+      resetDrag();
     };
 
     const onClickCapture = (event: MouseEvent) => {
@@ -128,7 +155,7 @@ export function useHorizontalDragScroll(
       container.removeEventListener("click", onClickCapture, true);
       resetDragStyles();
     };
-  }, [containerRef, onDragEnd]);
+  }, [containerRef, enabled, onDragEnd]);
 
   return { isDragging };
 }

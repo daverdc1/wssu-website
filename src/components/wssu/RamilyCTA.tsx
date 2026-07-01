@@ -41,13 +41,13 @@ export function RamilyCTA() {
       className={cn("cta-split overflow-hidden", inView && "cta-in-view")}
     >
       <div className="grid grid-cols-1 gap-0 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:min-h-[min(85vh,920px)]">
-        <div className="relative min-h-[55vh] overflow-hidden lg:min-h-full">
+        <div className="relative aspect-square overflow-hidden lg:aspect-auto lg:min-h-full">
           <OptimizedImage
             src={ctaImage}
             alt="WSSU students"
             priority
             sizes="(min-width: 1024px) 50vw, 100vw"
-            className="cta-photo absolute inset-0 block size-full object-cover object-center"
+            className="cta-photo absolute inset-0 block size-full object-cover object-bottom lg:object-center"
           />
         </div>
 
