@@ -3,7 +3,7 @@ import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { DemoLink } from "./DemoLink";
 import { CtaArrowIcon } from "./CtaArrowIcon";
-import { ctaButtonLift } from "./navButtonStyles";
+import { ctaButtonLift, sharpButtonRadius } from "./navButtonStyles";
 import { WipeButton } from "./WipeButton";
 import { HeroVideoControls, HeroVideoLayer } from "@/lib/hero-video";
 import { MarkerCircle } from "./MarkerCircle";
@@ -11,19 +11,28 @@ import { MarkerCircle } from "./MarkerCircle";
 export function Hero() {
   const [scrollHintOpacity, setScrollHintOpacity] = useState(1);
   const [heroInView, setHeroInView] = useState(true);
+  const [showVideoControls, setShowVideoControls] = useState(true);
 
   useEffect(() => {
     const fadeDistance = 88;
+    const hideControlsAfterViewportRatio = 0.55;
 
     const onScroll = () => {
       const progress = Math.min(1, window.scrollY / fadeDistance);
       const eased = 1 - (1 - progress) ** 3;
       setScrollHintOpacity(1 - eased);
+
+      const vh = window.innerHeight;
+      setShowVideoControls(window.scrollY < vh * hideControlsAfterViewportRatio);
     };
 
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    window.addEventListener("resize", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
   }, []);
 
   useEffect(() => {
@@ -49,10 +58,20 @@ export function Hero() {
       </div>
 
       <div className="hero-viewport-fill relative isolate z-10 flex flex-col">
-        <div className="pointer-events-none absolute right-6 top-24 z-40 flex flex-col items-end gap-4 md:right-10 md:top-28 md:gap-5">
-          <span className="hidden font-mono text-[10px] uppercase tracking-[0.3em] text-wssu-white/60 md:block">
+        <div className="pointer-events-none absolute right-6 top-24 z-40 md:right-10 md:top-28">
+          <span className="hidden font-mono text-[10px] uppercase tracking-[0.3em] text-wssu-white/60 md:block md:text-right">
             (00) — Winston-Salem · NC
           </span>
+        </div>
+
+        <div
+          className={cn(
+            "fixed right-5 z-50 transition-opacity duration-300 md:right-10",
+            "bottom-[max(1.5rem,env(safe-area-inset-bottom))]",
+            showVideoControls ? "opacity-100" : "pointer-events-none opacity-0",
+          )}
+          aria-hidden={!showVideoControls}
+        >
           <HeroVideoControls />
         </div>
 
@@ -77,16 +96,16 @@ export function Hero() {
               </span>
             </h1>
 
-            <div className="relative z-30 mt-10 flex flex-wrap items-center gap-3 md:mt-14 lg:mt-16">
+            <div className="relative z-30 mt-10 flex flex-wrap items-center gap-2.5 md:mt-14 lg:mt-16">
               <WipeButton
                 lift
                 wipeFill="black"
-                className="group font-display inline-flex items-center gap-3 border border-transparent bg-wssu-red px-8 py-4 text-lg uppercase tracking-[0.02em] text-wssu-white shadow-[0_8px_28px_rgba(0,0,0,0.35)] md:text-xl"
+                className="group font-display inline-flex items-center gap-2.5 border border-transparent bg-wssu-red px-6 py-3 text-base uppercase tracking-[0.02em] text-wssu-white shadow-[0_8px_28px_rgba(0,0,0,0.35)] md:text-lg"
               >
                 Apply
                 <CtaArrowIcon />
               </WipeButton>
-              <DemoLink className={cn("group font-display inline-flex items-center gap-3 border border-wssu-white/80 bg-wssu-black/35 px-8 py-4 text-lg uppercase tracking-[0.02em] text-wssu-white shadow-[0_8px_28px_rgba(0,0,0,0.25)] backdrop-blur-sm transition-colors hover:bg-wssu-white hover:text-wssu-black md:text-xl", ctaButtonLift)}>
+              <DemoLink className={cn("group font-display inline-flex items-center gap-2.5 border border-wssu-white/80 bg-wssu-black/35 px-6 py-3 text-base uppercase tracking-[0.02em] text-wssu-white shadow-[0_8px_28px_rgba(0,0,0,0.25)] backdrop-blur-sm transition-colors hover:bg-wssu-white hover:text-wssu-black md:text-lg", sharpButtonRadius, ctaButtonLift)}>
                 Explore Programs
                 <CtaArrowIcon />
               </DemoLink>

@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, Pause, Play } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export const connectedControlShell = "relative inline-flex shrink-0 border border-wssu-black/20";
+export const connectedControlShell =
+  "relative inline-flex shrink-0 rounded-[1px] border border-wssu-black/20";
 
 export const connectedControlItem =
   "relative z-10 flex min-h-11 shrink-0 items-center justify-center text-wssu-black transition-colors duration-300";

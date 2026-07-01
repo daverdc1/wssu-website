@@ -1,5 +1,6 @@
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import { sharpButtonRadius } from "./navButtonStyles";
 
 export const wipeFillColors = {
   black: "bg-wssu-black",
@@ -53,6 +54,7 @@ export function WipeButton({
       type={type}
       className={cn(
         "btn-wipe relative isolate cursor-pointer overflow-hidden",
+        sharpButtonRadius,
         lift && "transition-transform motion-safe:hover:-translate-y-0.5",
         className,
       )}

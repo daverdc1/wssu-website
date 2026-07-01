@@ -69,7 +69,7 @@ export function Nav() {
       >
         <div
           className={cn(
-            "h-full border-b border-wssu-black/10 bg-wssu-white/95 shadow-[0_1px_0_rgba(9,9,11,0.05)] backdrop-blur-md",
+            "h-full border-b border-wssu-black/10 bg-wssu-white/88 shadow-[0_1px_0_rgba(9,9,11,0.05)] backdrop-blur-md transition-[background-color,backdrop-filter] duration-300",
             scrolled && "lg:border-b-0 lg:bg-transparent lg:shadow-none lg:backdrop-blur-none",
           )}
         >
@@ -79,7 +79,7 @@ export function Nav() {
                 className={cn(
                   "flex h-full w-full items-center justify-between overflow-visible",
                   scrolled &&
-                    "lg:h-16 lg:w-[calc(100%+2rem)] lg:-mx-4 lg:rounded-xl lg:border lg:border-wssu-black/15 lg:bg-wssu-white lg:px-8 lg:shadow-[0_0_0_1px_rgba(9,9,11,0.06),0_16px_48px_-14px_rgba(9,9,11,0.42)]",
+                    "lg:h-16 lg:w-[calc(100%+2rem)] lg:-mx-4 lg:rounded-xl lg:border lg:border-wssu-black/15 lg:bg-wssu-white/88 lg:px-8 lg:shadow-[0_0_0_1px_rgba(9,9,11,0.06),0_16px_48px_-14px_rgba(9,9,11,0.42)] lg:backdrop-blur-md",
                 )}
               >
             <a

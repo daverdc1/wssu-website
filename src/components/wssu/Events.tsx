@@ -5,6 +5,7 @@ import { DemoLink } from "./DemoLink";
 import { HoverAccentLine } from "./HoverAccentLine";
 import { SubnavArrow } from "./SubnavArrow";
 import { SectionHeaderLabelRow } from "./SectionHeaderGrid";
+import { sharpButtonRadius } from "./navButtonStyles";
 
 type EventCategory = "Admissions" | "Campus" | "Virtual" | "Athletics";
 
@@ -217,7 +218,7 @@ export function Events() {
               </ul>
             </nav>
 
-            <DemoLink className="mt-6 inline-flex items-center gap-2 border border-wssu-black px-6 py-3.5 text-xs font-bold uppercase tracking-[0.15em] text-wssu-black transition-colors hover:bg-wssu-black hover:text-wssu-white">
+            <DemoLink className={cn("mt-6 inline-flex items-center gap-2 border border-wssu-black px-6 py-3.5 text-xs font-bold uppercase tracking-[0.15em] text-wssu-black transition-colors hover:bg-wssu-black hover:text-wssu-white", sharpButtonRadius)}>
               <Calendar className="size-3.5" strokeWidth={2.25} aria-hidden="true" />
               Full calendar
             </DemoLink>

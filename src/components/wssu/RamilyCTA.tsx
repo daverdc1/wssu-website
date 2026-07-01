@@ -4,7 +4,7 @@ import { ctaImage } from "./photos";
 import { OptimizedImage } from "./OptimizedImage";
 import { CtaArrowIcon } from "./CtaArrowIcon";
 import { DemoLink } from "./DemoLink";
-import { ctaButtonLift } from "./navButtonStyles";
+import { ctaButtonLift, sharpButtonRadius } from "./navButtonStyles";
 import { WipeButton } from "./WipeButton";
 
 const headlineLines = [
@@ -78,20 +78,21 @@ export function RamilyCTA() {
             </p>
 
             <div
-              className="cta-reveal mt-10 flex flex-wrap gap-3 md:mt-12"
+              className="cta-reveal mt-10 flex flex-wrap gap-2.5 md:mt-12"
               style={{ "--cta-delay": "500ms" } as CSSProperties}
             >
               <WipeButton
                 lift
                 wipeFill="red"
-                className="group font-display inline-flex items-center gap-3 border border-wssu-black bg-wssu-black px-8 py-4 text-lg uppercase tracking-[0.02em] text-wssu-white transition-colors hover:text-wssu-black md:text-xl"
+                className="group font-display inline-flex items-center gap-2.5 border border-wssu-black bg-wssu-black px-6 py-3 text-base uppercase tracking-[0.02em] text-wssu-white transition-colors hover:text-wssu-black md:text-lg"
               >
                 Apply
                 <CtaArrowIcon />
               </WipeButton>
               <DemoLink
                 className={cn(
-                  "group font-display inline-flex items-center gap-3 border border-wssu-white/90 px-8 py-4 text-lg uppercase tracking-[0.02em] text-wssu-white transition-colors hover:bg-wssu-white hover:text-wssu-red md:text-xl",
+                  "group font-display inline-flex items-center gap-2.5 border border-wssu-white/90 px-6 py-3 text-base uppercase tracking-[0.02em] text-wssu-white transition-colors hover:bg-wssu-white hover:text-wssu-red md:text-lg",
+                  sharpButtonRadius,
                   ctaButtonLift,
                 )}
               >

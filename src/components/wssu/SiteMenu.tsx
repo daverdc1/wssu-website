@@ -181,7 +181,7 @@ export function SiteMenu({ open, onClose }: SiteMenuProps) {
               <input
                 ref={searchRef}
                 id={searchInputId}
-                type="search"
+                type="text"
                 role="searchbox"
                 enterKeyHint="search"
                 autoComplete="off"
@@ -191,7 +191,7 @@ export function SiteMenu({ open, onClose }: SiteMenuProps) {
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder="Search the site"
                 className={cn(
-                  "w-full border-0 bg-transparent py-4 pl-12 font-sans text-base leading-none text-wssu-black shadow-none outline-none placeholder:font-marker placeholder:text-base placeholder:text-wssu-black/45 md:py-3 md:pl-11 md:text-sm md:placeholder:text-sm",
+                  "site-menu-search-input w-full border-0 bg-transparent py-4 pl-12 font-sans text-base leading-none text-wssu-black shadow-none outline-none placeholder:font-marker placeholder:text-base placeholder:text-wssu-black/45 md:py-3 md:pl-11 md:text-sm md:placeholder:text-sm",
                   query.length > 0 ? "pr-10" : "pr-4",
                 )}
               />

@@ -7,6 +7,7 @@ import { OptimizedImage } from "./OptimizedImage";
 import { ProgramImageWipe, useProgramWipeSwapMs } from "./ProgramImageWipe";
 import { SubnavArrow } from "./SubnavArrow";
 import { SectionHeaderGrid } from "./SectionHeaderGrid";
+import { sharpButtonRadius } from "./navButtonStyles";
 import { programs } from "./photos";
 
 type ProgramAccent = "gold" | "teal" | "lime" | "red";
@@ -334,7 +335,7 @@ export function Programs() {
                 >
                   Explore {active.ctaLabel ?? active.title.split(",")[0].split(" and ")[0]} Programs
                 </WipeButton>
-                <DemoLink className="inline-flex w-full items-center justify-center gap-2 border border-wssu-black px-6 py-3.5 text-xs font-bold uppercase tracking-[0.15em] text-wssu-black transition-colors hover:bg-wssu-black hover:text-wssu-white sm:w-auto">
+                <DemoLink className={cn("inline-flex w-full items-center justify-center gap-2 border border-wssu-black px-6 py-3.5 text-xs font-bold uppercase tracking-[0.15em] text-wssu-black transition-colors hover:bg-wssu-black hover:text-wssu-white sm:w-auto", sharpButtonRadius)}>
                   All majors
                   <ArrowRight className="size-4" strokeWidth={2.5} />
                 </DemoLink>

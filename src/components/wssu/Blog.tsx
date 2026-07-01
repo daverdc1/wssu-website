@@ -7,6 +7,7 @@ import { ConnectedArrowControls } from "./ConnectedArrowControls";
 import { DemoLink } from "./DemoLink";
 import { HoverAccentLine } from "./HoverAccentLine";
 import { SectionHeaderLabelRow } from "./SectionHeaderGrid";
+import { sharpButtonRadius } from "./navButtonStyles";
 import { blog } from "./photos";
 
 const categories = [
@@ -308,7 +309,7 @@ export function Blog() {
           </h2>
           <div className="section-intro-grid section-intro-grid--full hidden w-full flex-col justify-end md:flex">
             <div className="flex w-full flex-wrap items-center justify-end gap-3">
-              <DemoLink className="shrink-0 border border-wssu-black px-6 py-3.5 text-xs font-bold uppercase tracking-[0.15em] text-wssu-black transition-colors hover:bg-wssu-black hover:text-wssu-white">
+              <DemoLink className={cn("shrink-0 border border-wssu-black px-6 py-3.5 text-xs font-bold uppercase tracking-[0.15em] text-wssu-black transition-colors hover:bg-wssu-black hover:text-wssu-white", sharpButtonRadius)}>
                 All news
               </DemoLink>
               <div className="flex shrink-0 items-center">
@@ -348,7 +349,7 @@ export function Blog() {
         </div>
 
         <div className="section-scroll-inset mt-8 flex items-center justify-between gap-4 md:hidden">
-          <DemoLink className="shrink-0 border border-wssu-black px-6 py-3.5 text-xs font-bold uppercase tracking-[0.15em] text-wssu-black transition-colors hover:bg-wssu-black hover:text-wssu-white">
+          <DemoLink className={cn("shrink-0 border border-wssu-black px-6 py-3.5 text-xs font-bold uppercase tracking-[0.15em] text-wssu-black transition-colors hover:bg-wssu-black hover:text-wssu-white", sharpButtonRadius)}>
             All news
           </DemoLink>
           <ConnectedArrowControls

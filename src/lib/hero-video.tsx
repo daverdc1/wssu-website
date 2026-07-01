@@ -110,7 +110,14 @@ export function HeroVideoProvider({ children }: { children: ReactNode }) {
       prepareVideoElement(video);
 
       const playPromise = video.play();
-      if (!playPromise) return;
+      if (!playPromise) {
+        if (!video.paused) {
+          autoplayAttemptsRef.current = 0;
+          clearAutoplayRetry();
+          markRenderedFrame();
+        }
+        return;
+      }
 
       playPromise
         .then(() => {
@@ -162,6 +169,8 @@ export function HeroVideoProvider({ children }: { children: ReactNode }) {
 
     prepareVideoElement(video);
     autoplayAttemptsRef.current = 0;
+    userPausedRef.current = false;
+    setUserPaused(false);
 
     const tryAutoplay = () => {
       if (!userPausedRef.current && video.paused) {
@@ -178,6 +187,7 @@ export function HeroVideoProvider({ children }: { children: ReactNode }) {
       tryAutoplay();
     };
 
+    video.addEventListener("loadedmetadata", tryAutoplay);
     video.addEventListener("loadeddata", tryAutoplay);
     video.addEventListener("canplay", tryAutoplay);
     video.addEventListener("canplaythrough", tryAutoplay);
@@ -202,6 +212,7 @@ export function HeroVideoProvider({ children }: { children: ReactNode }) {
 
     return () => {
       clearAutoplayRetry();
+      video.removeEventListener("loadedmetadata", tryAutoplay);
       video.removeEventListener("loadeddata", tryAutoplay);
       video.removeEventListener("canplay", tryAutoplay);
       video.removeEventListener("canplaythrough", tryAutoplay);
@@ -271,23 +282,11 @@ export function HeroVideoLayer() {
     <>
       {showVideo ? (
         <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
-          {!hasRenderedFrame ? (
-            <OptimizedImage
-              src={hero}
-              alt=""
-              aria-hidden="true"
-              priority
-              sizes="100vw"
-              className="absolute inset-0 size-full object-cover"
-            />
-          ) : null}
           <video
+            key={videoSrc}
             ref={setVideoRef}
             src={videoSrc}
-            className={cn(
-              "size-full object-cover object-center",
-              hasRenderedFrame ? "opacity-100" : "opacity-0",
-            )}
+            className="size-full object-cover object-center"
             poster={HERO_POSTER_SRC}
             muted
             defaultMuted
@@ -297,22 +296,50 @@ export function HeroVideoLayer() {
             preload="auto"
             aria-hidden="true"
           />
+          {!hasRenderedFrame ? (
+            <OptimizedImage
+              src={hero}
+              alt=""
+              aria-hidden="true"
+              priority
+              sizes="100vw"
+              className="absolute inset-0 z-[1] size-full object-cover"
+            />
+          ) : null}
+
+          <div
+            className="hero-video-overlay pointer-events-none absolute inset-0 z-[2]"
+            aria-hidden="true"
+          />
+
+          <div
+            className="pointer-events-none absolute inset-0 z-[3] bg-wssu-black/10 md:hidden"
+            aria-hidden="true"
+          />
         </div>
       ) : (
-        <OptimizedImage
-          src={hero}
-          alt=""
-          aria-hidden="true"
-          priority
-          sizes="100vw"
-          className="absolute inset-0 size-full object-cover opacity-65"
-        />
+        <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
+          <OptimizedImage
+            src={hero}
+            alt=""
+            aria-hidden="true"
+            priority
+            sizes="100vw"
+            className="absolute inset-0 size-full object-cover opacity-65"
+          />
+
+          <div
+            className="hero-video-overlay pointer-events-none absolute inset-0 z-[2]"
+            aria-hidden="true"
+          />
+
+          <div
+            className="pointer-events-none absolute inset-0 z-[3] bg-wssu-black/10 md:hidden"
+            aria-hidden="true"
+          />
+        </div>
       )}
 
-      <div
-        className="hero-video-bottom-left-diagonal-mask pointer-events-none absolute inset-0"
-        aria-hidden="true"
-      />
       <div
         className="pointer-events-none absolute inset-x-0 bottom-0 h-80 bg-gradient-to-t from-wssu-black via-wssu-black/55 to-transparent md:h-96"
         aria-hidden="true"
@@ -325,11 +352,13 @@ export function HeroVideoControls() {
   const { showVideo, userPaused, togglePlayback, enableVideo } = useHeroVideo();
 
   const buttonClass = cn(
-    "inline-flex items-center justify-center border border-wssu-white/40 bg-wssu-black/65 text-wssu-white shadow-[0_4px_16px_rgba(0,0,0,0.3)] backdrop-blur-sm transition-colors",
-    "p-2 md:gap-2 md:px-2.5 md:py-2",
-    "hover:border-wssu-white/60 hover:bg-wssu-black/80",
+    "inline-flex items-center justify-center rounded-full border border-wssu-white/90 bg-wssu-white text-wssu-black shadow-[0_4px_16px_rgba(0,0,0,0.2)] backdrop-blur-sm transition-colors",
+    "p-3 md:gap-2 md:p-2 md:px-2.5 md:py-2",
+    "hover:border-wssu-white hover:bg-wssu-white/90",
     "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wssu-white",
   );
+
+  const iconClass = "size-4 md:size-3";
 
   return showVideo ? (
     <button
@@ -339,9 +368,9 @@ export function HeroVideoControls() {
       className={cn(buttonClass, "pointer-events-auto")}
     >
       {userPaused ? (
-        <Play className="size-3" strokeWidth={2.25} aria-hidden="true" />
+        <Play className={iconClass} strokeWidth={2.25} aria-hidden="true" />
       ) : (
-        <Pause className="size-3" strokeWidth={2.25} aria-hidden="true" />
+        <Pause className={iconClass} strokeWidth={2.25} aria-hidden="true" />
       )}
       <span className="sr-only">{userPaused ? "Play video" : "Pause video"}</span>
       <span className="hidden text-[10px] font-bold uppercase tracking-[0.18em] md:inline">
@@ -355,7 +384,7 @@ export function HeroVideoControls() {
       aria-label="Play background video"
       className={cn(buttonClass, "pointer-events-auto")}
     >
-      <Play className="size-3" strokeWidth={2.25} aria-hidden="true" />
+      <Play className={iconClass} strokeWidth={2.25} aria-hidden="true" />
       <span className="sr-only">Play video</span>
     </button>
   );

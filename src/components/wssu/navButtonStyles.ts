@@ -1,5 +1,7 @@
 export const ctaButtonLift = "transition-transform motion-safe:hover:-translate-y-0.5";
 
+export const sharpButtonRadius = "rounded-[1px]";
+
 export const navActionButtonTypography =
   "inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.15em] transition-all duration-300 ease-out";
 

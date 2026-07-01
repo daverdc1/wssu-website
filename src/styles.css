@@ -349,6 +349,17 @@ html[data-ios-viewport="true"] .hero-viewport-fill {
   letter-spacing: -0.04em;
   -webkit-text-stroke: 0;
   paint-order: normal;
+  text-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.13),
+    0 2px 21px rgba(0, 0, 0, 0.13);
+}
+
+@supports (color: color(display-p3 0 0 0)) {
+  #hero h1 .cta-headline-bold {
+    text-shadow:
+      0 1px 3px color(display-p3 0 0 0 / 0.13),
+      0 2px 21px color(display-p3 0 0 0 / 0.13);
+  }
 }
 
 .stat-value.font-display {
@@ -423,14 +434,18 @@ html[data-ios-viewport="true"] .hero-viewport-fill {
   }
 }
 
-.hero-video-bottom-left-diagonal-mask {
-  background: linear-gradient(
-    to top right,
-    rgba(9, 9, 11, 0.78) 0%,
-    rgba(9, 9, 11, 0.48) 30%,
-    rgba(9, 9, 11, 0.16) 55%,
-    transparent 75%
-  );
+.hero-video-overlay {
+  background: linear-gradient(73deg, rgba(0, 0, 0, 0.4) 0%, #000 50.01%);
+}
+
+@supports (color: color(display-p3 0 0 0)) {
+  .hero-video-overlay {
+    background: linear-gradient(
+      73deg,
+      color(display-p3 0 0 0 / 0.4) 0%,
+      color(display-p3 0 0 0 / 0) 50.01%
+    );
+  }
 }
 
 .hero-scroll-indicator {
