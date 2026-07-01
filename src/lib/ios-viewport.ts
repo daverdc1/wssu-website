@@ -1,4 +1,4 @@
-/** Keeps CSS viewport units in sync with iOS Safari's dynamic chrome. */
+/** Sync hero height with iOS Safari's visible viewport (no overlay fillers). */
 export const IOS_VIEWPORT_SCRIPT = `(function () {
   var root = document.documentElement;
   var coarse = window.matchMedia("(pointer: coarse)").matches;
@@ -15,14 +15,6 @@ export const IOS_VIEWPORT_SCRIPT = `(function () {
     var vv = window.visualViewport;
     var height = vv ? vv.height : window.innerHeight;
     root.style.setProperty("--vh", height * 0.01 + "px");
-
-    if (!vv) {
-      root.style.setProperty("--safari-ui-gap", "0px");
-      return;
-    }
-
-    var gap = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
-    root.style.setProperty("--safari-ui-gap", Math.min(gap, 160) + "px");
   }
 
   syncViewport();
@@ -31,6 +23,5 @@ export const IOS_VIEWPORT_SCRIPT = `(function () {
 
   if (window.visualViewport) {
     window.visualViewport.addEventListener("resize", syncViewport, { passive: true });
-    window.visualViewport.addEventListener("scroll", syncViewport, { passive: true });
   }
 })();`;

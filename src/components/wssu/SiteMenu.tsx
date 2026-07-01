@@ -168,7 +168,7 @@ export function SiteMenu({ open, onClose }: SiteMenuProps) {
         <div className="flex-1 overflow-y-auto px-5 py-5 md:px-8 md:py-6">
           <form
             onSubmit={handleSearch}
-            className="group/search flex overflow-hidden border border-wssu-black/12 bg-wssu-white transition-all duration-200 hover:border-wssu-red/45 focus-within:border-wssu-red focus-within:shadow-[0_0_0_3px_rgba(200,16,46,0.18),0_0_18px_rgba(200,16,46,0.22)]"
+            className="group/search flex overflow-hidden border border-wssu-black/12 bg-wssu-white transition-all duration-200 hover:border-wssu-red/45 focus-within:border-wssu-red focus-within:shadow-[0_0_0_3px_rgb(var(--wssu-red-rgb)/0.18),0_0_18px_rgb(var(--wssu-red-rgb)/0.22)]"
           >
             <div className="relative min-w-0 flex-1">
               <label htmlFor={searchInputId} className="sr-only">

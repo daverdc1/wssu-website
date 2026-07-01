@@ -44,7 +44,7 @@ export function Outcomes() {
           className="absolute -bottom-[18%] -left-[8%] h-[72%] w-[58%] max-w-none object-cover opacity-[0.14] mix-blend-luminosity"
         />
         <div className="absolute inset-0 bg-gradient-to-tr from-wssu-black via-wssu-black/96 to-wssu-black/88" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_90%_80%_at_15%_85%,rgba(200,16,46,0.08),transparent_55%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_90%_80%_at_15%_85%,rgb(var(--wssu-red-rgb)/0.08),transparent_55%)]" />
       </div>
 
       <div className="relative z-10">

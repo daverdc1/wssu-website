@@ -51,8 +51,9 @@
 :root {
   --radius: 0.5rem;
 
-  --wssu-red: #C8102E;
-  --wssu-red-hover: #C8102E;
+  --wssu-red: #C8012E;
+  --wssu-red-hover: #C8012E;
+  --wssu-red-rgb: 200 1 46;
   --wssu-gold: #ffcd00;
   --wssu-teal: #00a3ad;
   --wssu-lime: #c4d600;
@@ -80,6 +81,13 @@
   --border: oklch(0.92 0 0);
   --input: oklch(0.922 0 0);
   --ring: var(--wssu-red);
+}
+
+@supports (color: color(display-p3 1 1 1)) {
+  :root {
+    --wssu-red: color(display-p3 0.7843 0.0039 0.1804);
+    --wssu-red-hover: color(display-p3 0.7843 0.0039 0.1804);
+  }
 }
 
 .dark {
@@ -112,14 +120,13 @@
   html {
     scroll-behavior: smooth;
     overflow-x: clip;
-    overscroll-behavior-y: none;
-    background-color: var(--wssu-white);
+    background-color: var(--wssu-black);
     height: 100%;
     height: -webkit-fill-available;
   }
 
   body {
-    background-color: var(--wssu-white);
+    background-color: transparent;
     color: var(--wssu-black);
     font-family: var(--font-sans);
     letter-spacing: -0.015em;
@@ -153,18 +160,6 @@
 html[data-ios-viewport="true"] .hero-viewport,
 html[data-ios-viewport="true"] .hero-viewport-fill {
   min-height: calc(var(--vh, 1vh) * 100);
-}
-
-html[data-ios-viewport="true"] body::after {
-  content: "";
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: var(--safari-ui-gap, 0px);
-  background-color: var(--wssu-white);
-  pointer-events: none;
-  z-index: 40;
 }
 
 @keyframes marker-draw {
