@@ -119,7 +119,7 @@
 
   html {
     overflow-x: clip;
-    background-color: var(--background);
+    background-color: var(--wssu-black);
     height: 100%;
     height: -webkit-fill-available;
   }
