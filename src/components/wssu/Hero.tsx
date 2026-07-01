@@ -58,12 +58,12 @@ export function Hero() {
 
         <div className="relative z-30 flex min-h-0 flex-1 flex-col">
           <div
-            className="pointer-events-none shrink-0 h-[calc(5rem+10rem)] md:h-[calc(5.5rem+8rem)] lg:h-[calc(5.5rem+10rem)]"
+            className="pointer-events-none shrink-0 h-[calc(5rem+7rem)] md:h-[calc(5.5rem+8rem)] lg:h-[calc(5.5rem+10rem)]"
             aria-hidden="true"
           />
-          <div className="min-h-32 flex-1 shrink sm:min-h-36 md:min-h-24 lg:min-h-32" aria-hidden="true" />
+          <div className="min-h-20 flex-1 shrink sm:min-h-24 md:min-h-24 lg:min-h-32" aria-hidden="true" />
 
-          <div className="w-full shrink-0 pb-5 pl-5 pr-3 pt-8 sm:pl-6 sm:pr-4 sm:pt-10 md:pb-6 md:pl-10 md:pr-5 md:pt-8 lg:pl-12 lg:pt-10">
+          <div className="w-full shrink-0 pb-5 pl-5 pr-3 pt-4 sm:pl-6 sm:pr-4 sm:pt-6 md:pb-6 md:pl-10 md:pr-5 md:pt-8 lg:pl-12 lg:pt-10">
             <h1 className="font-display flex flex-col uppercase tracking-[-0.04em] text-wssu-white">
               <span className="cta-headline-light mb-2 text-3xl leading-[0.95] tracking-[-0.04em] md:mb-3 md:text-5xl">
                 Future Focused Programs.
